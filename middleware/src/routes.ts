@@ -11,7 +11,7 @@ const genToken = function(req:any, res:any, next:any){
     
     let claims = {
         'aud': API_SERVER,
-        'exp': Math.floor(Date.now() / 1000) + (60 * 60), //expires in 55mins
+        'exp': Math.floor(Date.now() / 1000) + (60 * 5), //expires in 5mins
         'accessKey': API_KEY["accessKey"],
         'projectId': PROJECT_ID
     }

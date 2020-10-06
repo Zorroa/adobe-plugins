@@ -4,6 +4,7 @@ import config from 'config'
 const API_SERVER = config.get("server")
 const TIMEOUT:string = '1m'
 
+// elastic search similarity query
 let similarityQuery = (hash:string)=>{
     return {
         "script_score": {
