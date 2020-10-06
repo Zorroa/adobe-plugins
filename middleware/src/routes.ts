@@ -1,12 +1,13 @@
+import config from 'config'
 import jwt from 'jsonwebtoken'
-import { allowedNodeEnvironmentFlags } from 'process'
+import { runInNewContext } from 'vm'
 import AssetsController from './controllers/assets'
 import FileController from './controllers/file'
 
 const genToken = function(req:any, res:any, next:any){
-    const API_SERVER = "https://api.zvi.zorroa.com"
-    const PROJECT_ID = "ADD PROJECT ID"
-    const API_KEY = "ADD PROJECT KEY"
+    const API_SERVER = config.get("server")
+    const PROJECT_ID = config.get("projectId")
+    const API_KEY = config.get("apiKey")
     
     let claims = {
         'aud': API_SERVER,

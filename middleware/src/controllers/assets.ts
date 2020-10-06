@@ -1,5 +1,7 @@
 import axios from 'axios'
+import config from 'config'
 
+const API_SERVER = config.get("server")
 const TIMEOUT:string = '1m'
 
 let similarityQuery = (hash:string)=>{
@@ -44,7 +46,7 @@ let get_all = async (data:any, headers:any)=>{
 
 // get next page
 let scroll = async (scrollId:String, headers:any) => {
-    let response = await axios.post("https://dev.api.zvi.zorroa.com/api/v3/assets/_search/scroll", {
+    let response = await axios.post(API_SERVER+"/api/v3/assets/_search/scroll", {
         "scroll": "1m",
         "scroll_id": scrollId
     }, {headers: headers})
@@ -56,7 +58,7 @@ let deleteScrollId = async (scrollId:string, headers:object)=>{
     console.log("delete sroll")
     let response = await axios.request({
         method: "delete",
-        url: "https://dev.api.zvi.zorroa.com/api/v3/assets/_search/scroll",
+        url: API_SERVER+"/api/v3/assets/_search/scroll",
         data: {"scroll_id": scrollId},
         headers: headers
     })
@@ -66,7 +68,7 @@ let deleteScrollId = async (scrollId:string, headers:object)=>{
 
 export default {
     get: async(req:any, res:any, next:any) => {
-        let response = await axios.get("https://dev.api.zvi.zorroa.com/api/v3/assets/_search", {headers: req.zmlpHeader})
+        let response = await axios.get(API_SERVER+"/api/v3/assets/_search", {headers: req.zmlpHeader})
 
         let data = await get_all(response, req.zmlpHeader)
 
@@ -76,7 +78,7 @@ export default {
     getTerm: async(req:any, res:any, next:any)=>{
         let query = {"query": {"simple_query_string": {"query": req.params.term}}}
 
-        let response = await axios.post("https://dev.api.zvi.zorroa.com/api/v3/assets/_search?scroll="+TIMEOUT, 
+        let response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT, 
                                         query, 
                                         {headers: req.zmlpHeader})
         
@@ -92,7 +94,7 @@ export default {
             {"match": {"media.type": type}},
             {"simple_query_string": {"query": term}}]}}}
 
-        let response = await axios.post("https://dev.api.zvi.zorroa.com/api/v3/assets/_search?scroll="+TIMEOUT, 
+        let response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT, 
             query, 
             {headers: req.zmlpHeader})
 
@@ -106,7 +108,7 @@ export default {
 
         let query = {"query": {"bool": {"must": [similarityQuery(hash)]}}}
 
-        let response = await axios.post("https://dev.api.zvi.zorroa.com/api/v3/assets/_search?scroll="+TIMEOUT, 
+        let response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT, 
             query, 
             {headers: req.zmlpHeader})
 
