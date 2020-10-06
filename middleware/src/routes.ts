@@ -4,9 +4,9 @@ import AssetsController from './controllers/assets'
 import FileController from './controllers/file'
 
 const genToken = function(req:any, res:any, next:any){
-    const API_SERVER = "https://dev.api.zvi.zorroa.com"
-    const PROJECT_ID = "7c482c46-8caa-4ef0-acb2-513ec7bda903"
-    const API_KEY = {"accessKey":"8p7wMFaDxekvXDg15hYLIg","secretKey":"5axM-UPZ2RWCpqtpxexuVg"}
+    const API_SERVER = "https://api.zvi.zorroa.com"
+    const PROJECT_ID = "ADD PROJECT ID"
+    const API_KEY = "ADD PROJECT KEY"
     
     let claims = {
         'aud': API_SERVER,
