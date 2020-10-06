@@ -28,5 +28,7 @@ const genToken = function(req:any, res:any, next:any){
 export default (app:any) => {
     app.get('/api/v3/assets/_search', genToken, AssetsController.get)
     app.get('/api/v3/assets/_search/:term', genToken, AssetsController.getTerm)
+    app.get('/api/v3/assets/_search/:type/:term', genToken, AssetsController.getTypeTerm)
+    app.get('/api/v3/assets/_search/sim/:hash', genToken, AssetsController.similaritySearch)
     app.get('/api/v3/files/_stream/:id', genToken, FileController.download)
 }
