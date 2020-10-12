@@ -1,0 +1,5 @@
+{
+    "server": "https://api.zvi.zorroa.com",
+    "projectId": "12345",
+    "apiKey": {"accessKey":"xyz","secretKey":"abc"}
+}
