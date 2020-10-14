@@ -27,7 +27,7 @@ describe('src.controllers.assets', ()=>{
             const res = mockRes()
 
             await assets.get(req, res, {})
-            expect(res.json).to.be.calledWith("hello2")
+            expect(res.json).to.be.calledWith("hello")
         })
     })
 
