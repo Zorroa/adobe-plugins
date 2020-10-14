@@ -1,0 +1,21 @@
+{
+  "name": "adobe-plugins",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "(cd middleware && npm install)",
+    "test": "(cd middleware && npm test)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zorroa/adobe-plugins.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zorroa/adobe-plugins/issues"
+  },
+  "homepage": "https://github.com/Zorroa/adobe-plugins#readme"
+}
