@@ -3,6 +3,14 @@ You’ll need to set an Adobe preference to prevent your host application (Photo
 
 > Mac: In the Terminal, type: defaults write com.adobe.CSXS.8 PlayerDebugMode 1
 
+Installing extension.  Create a symlink to local instance of this project.
+`ln -s <FULL PATH TO LOCAL REPO> /Users/{USERNAME}/Library/Application \Support/Adobe/CEP/extensions/zmlpext`
+
+Navigate to project and run `npm install` at it's root.   This will install module dependencies for both graphql & premiere-ext, then build their distribution files.  
+
+You can then open Adobe Premiere and navigate to Window > Extensions > Zorroa Visual Intelligence.  Navigate to Settings and enter your credentials to begin.
+
+##Contents of project
 - premiere-ext, a reactjs adobe extension
 - graphql, middleware for making network requests to ZMLP API
 - csxs, adobe extension manifest. this boots up the extension in the adobe host environment.
