@@ -1,6 +1,0 @@
-{
-    "defaultServerity": "error",
-    "extends":[
-        "tslint:recommended"
-    ]
-}

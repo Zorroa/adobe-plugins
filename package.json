@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "(cd middleware && npm install)",
-    "test": "(cd middleware && npm test)"
+    "install": "(cd graphql && npm install) ; (cd premiere-ext && npm install); npm run build",
+    "build": "(cd graphql && npm run build) ; (cd premiere-ext && npm run build)",
+    "test": "(cd graphql && npm test)"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Zorroa/adobe-plugins.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nu Butthajit",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Zorroa/adobe-plugins/issues"

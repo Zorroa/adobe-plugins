@@ -1,0 +1,117 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+img {
+  max-width: inherit;
+}
+.row {
+  padding-top: 10px;
+}
+
+video {
+  width: 100%;
+  margin-top: 30px;
+}
+.video-link {
+  max-width: inherit;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 0.25rem;
+}
+
+.responsive-image {
+  max-width: 100%;
+}
+.cell img {
+  display: block;
+}
+.cell {
+  margin: 0.25rem;
+}
+@media screen and (min-width: 600px) {
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  .cell {
+    width: calc(50% - 2rem);
+  }
+}
+@media screen and (min-width: 1000px) {
+  .cell {
+    width: calc(33.3333% - 2rem);
+  }
+}
+
+label {
+  color: #999999;
+}
+
+#settingsButton {
+  margin-top: 8px;
+}
+
+nav {
+  background-color: #333333;
+}
+.thumb-container {
+  position: relative;
+  max-height: 150px;
+  overflow-y: hidden;
+}
+
+.thumb-buttons {
+  position: absolute;
+  top: 5px;
+  right: 1px;
+}
+
+.thumb-button {
+  width: 25px;
+  height: 25px;
+  background-color: #666666;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+}
+
+svg,
+path {
+  pointer-events: none;
+}
+
+.css-0 {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}

@@ -1,0 +1,9 @@
+{
+    "defaultServerity": "error",
+    "extends":[
+        "tslint:recommended"
+    ],
+    "rules": {
+        "no-console": false
+    }
+}
