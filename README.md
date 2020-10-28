@@ -10,7 +10,7 @@ Navigate to project and run `npm install` at it's root.   This will install modu
 
 You can then open Adobe Premiere and navigate to Window > Extensions > Zorroa Visual Intelligence.  Navigate to Settings and enter your credentials to begin.
 
-##Contents of project
+## Contents of project
 - premiere-ext, a reactjs adobe extension
 - graphql, middleware for making network requests to ZMLP API
 - csxs, adobe extension manifest. this boots up the extension in the adobe host environment.
