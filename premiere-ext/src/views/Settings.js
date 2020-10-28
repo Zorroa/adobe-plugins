@@ -7,7 +7,8 @@ class Settings extends Component {
     this.state = {
         zapiKey:  "",
         projectId: "",
-        zapiServer: "https://api.zvi.zorroa.com"
+        zapiServer: "https://api.zvi.zorroa.com",
+        credSet: false
     }
   }
 
@@ -28,6 +29,7 @@ class Settings extends Component {
     
     if (zapiServer !== ""){
         zapiKey = "*****************"
+        this.setState({credSet: true})
     }
 
     this.setState({
@@ -56,16 +58,25 @@ class Settings extends Component {
         headers: {
             "Content-Type":"application/json"
         }})
-    console.log(res)
+    
+    if(!res["data"].hasOwnProperty("errors")){
+      this.setState({credSet: true})
+    }
   }
 
   render() {
+    let statusElem = <div></div>
+    if(this.state.credSet){
+      statusElem = <label id="setStatus">Credentials Set</label>
+    }
+
     return (
         <div className="row">
             <div className="col"></div>
             <div className="col-md-10">
                 <form method="post" action="#" id="#">
                     <div className="form-group">
+                        {statusElem}<br/>
                         <label>Project ID </label>
                         <input type="text" name="projectid" className="form-control" onChange={this.onProjectId.bind(this)} value={this.state.projectId}/>
                         <label>Server </label>
