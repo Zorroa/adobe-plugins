@@ -1,28 +1,34 @@
 import fs from 'fs'
 import config from '../../config/config'
+import {contains} from 'ramda'
 
-export const authorize = async (_:any, args:any)=>{
+export class InvalidApiKeyError extends Error{}
+
+export const authorize = (_:any, args:any)=>{
     const { zapiKey, zapiServer, projectId } = args.input;
+    try{
+        const key = JSON.parse(decodeURIComponent(zapiKey))
 
-    const key = JSON.parse(decodeURIComponent(zapiKey))
-
-    config.zapiKey = key
-    config.projectId = projectId
-    config.zapiServer = zapiServer
-
-    // cache file
-    // fs.writeFileSync(process.env.USER_AUTH_FILE, JSON.stringify(config))
-    fs.writeFile(process.env.USER_AUTH_FILE, JSON.stringify(config), (err)=>{
-        if(err) {
-            return {status: err}
-        }else{
-            return {status: "ok"}
+        const keys = Object.keys(key)
+        
+        if(!contains('apiKey', keys) || !contains('secretKey', keys)){
+            throw new InvalidApiKeyError("Invalid API Key")
         }
-    })
+
+        config.zapiKey = key
+        config.projectId = projectId
+        config.zapiServer = zapiServer
+
+        // cache file
+        fs.writeFileSync(process.env.USER_AUTH_FILE, JSON.stringify(config))
+        return {status: "ok"}
+    }catch(err){
+        return {status: err}
+    }
 }
 
 export const userAuthorization = async(_:any, args:any)=>{
-
+    
     if(fs.existsSync(process.env.USER_AUTH_FILE)){
         const {zapiServer, projectId} = JSON.parse(fs.readFileSync(process.env.USER_AUTH_FILE, "utf8"))
 

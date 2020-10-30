@@ -4,23 +4,23 @@ import {find, propEq } from 'ramda'
 import {genToken} from '../zapi/index'
 
 
-const downloadThumbnail = async (req:any)=>{
-
+export const downloadThumbnail = async (req:any)=>{
     const filePath = await zfile.download(req)
     return filePath
 }
 
-const getTumbnail = async (response:any, req:any)=>{
-    response = response.map(async (asset:any)=>{
+export const getTumbnail = (response:any, req:any)=>{
+    response = response.map(async(asset:any)=>{
+
         const {files} = asset
 
         // use web-proxy image
         const proxyFile:any = find(propEq("name","web-proxy.jpg"))(files)
 
-        req.params.id = proxyFile.id
+        // req.params.id = proxyFile.id
 
         const filepath = await downloadThumbnail(req)
-
+        
         const id = files[0].id.split("/")[1]
 
         return {
