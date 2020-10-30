@@ -9,7 +9,7 @@ function Navigation(props) {
     const [type, setType] = useState("all")
 
     const onSearch = useCallback(() => {
-        history.push('/search/'+term+'/'+type)
+        history.push('/search/'+this.term+'/'+this.type)
     }, [history]);
 
     const onSettings = useCallback(() => {
@@ -38,7 +38,7 @@ function Navigation(props) {
 
                             </InputGroup>
                         </Form>
-                        <Button className="btn btn-default btn-md" onClick={onSearch}>Search </Button>
+                        <Button className="btn btn-default btn-md" onClick={onSearch.bind(this)}>Search </Button>
                     </nav>
                 </div>
                 <div className="col-sm-3 text-right">
