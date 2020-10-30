@@ -1,15 +1,15 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Row, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown  } from 'react-bootstrap';
 import {useHistory} from 'react-router-dom';
 
 function Navigation(props) {
     const history = useHistory();
 
-    let term = "";
-    let type = "all";
+    const [term, setTerm] = useState("")
+    const [type, setType] = useState("all")
 
     const onSearch = useCallback(() => {
-        history.push('/search/'+this.term+'/'+this.type)
+        history.push('/search/'+term+'/'+type)
     }, [history]);
 
     const onSettings = useCallback(() => {

@@ -41,7 +41,7 @@ class Video extends Component {
     let displayType
 
     if (this.state.mimeType === "image/jpeg"){
-      displayType = <img src={this.state.url}/>
+      displayType = <img src={this.state.url} alt="video thumbnail"/>
     }else{
       displayType = <video controls autoPlay src={this.state.url} />
     }
