@@ -1,16 +1,16 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Row, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown  } from 'react-bootstrap';
 import {useHistory} from 'react-router-dom';
 
 function Navigation(props) {
     const history = useHistory();
 
-    let term = "";
-    let type = "all";
+    const [term, setTerm] = useState("")
+    const [type, setType] = useState("all")
 
     const onSearch = useCallback(() => {
         history.push('/search/'+term+'/'+type)
-    }, [history]);
+    }, [history, term, type]);
 
     const onSettings = useCallback(() => {
         history.push('/settings')
@@ -27,18 +27,18 @@ function Navigation(props) {
                                 variant="outline-secondary"
                                 title="Dropdown"
                                 id="input-group-dropdown-1"
-                                onSelect={e => type = e}
+                                onSelect={e => setType(e)}
                                 >
                                     <Dropdown.Item eventKey="all">All</Dropdown.Item>
                                     <Dropdown.Item  eventKey="video">Video</Dropdown.Item>
                                     <Dropdown.Item eventKey="image">Images</Dropdown.Item>
                                     <Dropdown.Item eventKey="document">Documents</Dropdown.Item>
                                 </DropdownButton>
-                                <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={e => term = e.target.value} />
+                                <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={e => setTerm(e.target.value)} />
 
                             </InputGroup>
                         </Form>
-                        <Button className="btn btn-default btn-md" onClick={onSearch}>Search </Button>
+                        <Button className="btn btn-default btn-md" onClick={onSearch.bind(this)}>Search </Button>
                     </nav>
                 </div>
                 <div className="col-sm-3 text-right">
