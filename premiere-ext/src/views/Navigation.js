@@ -9,7 +9,7 @@ function Navigation(props) {
     const [type, setType] = useState("all")
 
     const onSearch = useCallback(() => {
-        history.push('/search/'+this.term+'/'+this.type)
+        history.push('/search/'+term+'/'+type)
     }, [history]);
 
     const onSettings = useCallback(() => {
