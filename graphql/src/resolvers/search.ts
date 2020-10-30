@@ -20,7 +20,7 @@ export const getTumbnail = (response:any, req:any)=>{
         // req.params.id = proxyFile.id
 
         const filepath = await downloadThumbnail(req)
-        
+
         const id = files[0].id.split("/")[1]
 
         return {

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {Row, Col } from 'react-bootstrap';
 import {downloadFile, getProxy, addToWorkspace} from '../Zapi';
-import axios from 'axios';
 import BeatLoader from 'react-spinners/BeatLoader'
 
 class Video extends Component {

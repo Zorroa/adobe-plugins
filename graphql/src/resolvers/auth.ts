@@ -10,7 +10,7 @@ export const authorize = (_:any, args:any)=>{
         const key = JSON.parse(decodeURIComponent(zapiKey))
 
         const keys = Object.keys(key)
-        
+
         if(!contains('apiKey', keys) || !contains('secretKey', keys)){
             throw new InvalidApiKeyError("Invalid API Key")
         }
@@ -28,7 +28,7 @@ export const authorize = (_:any, args:any)=>{
 }
 
 export const userAuthorization = async(_:any, args:any)=>{
-    
+
     if(fs.existsSync(process.env.USER_AUTH_FILE)){
         const {zapiServer, projectId} = JSON.parse(fs.readFileSync(process.env.USER_AUTH_FILE, "utf8"))
 

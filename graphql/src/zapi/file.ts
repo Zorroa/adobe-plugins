@@ -8,7 +8,7 @@ export default {
     download: (req:any) => {
         return new Promise(async (resolve, reject)=>{
             const url = API_SERVER+"/api/v3/files/_stream/"
-            
+
             const fileId = req.params.id
             const paths = fileId.split('/')
 
