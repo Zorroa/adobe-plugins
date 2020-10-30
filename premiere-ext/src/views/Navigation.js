@@ -10,7 +10,7 @@ function Navigation(props) {
 
     const onSearch = useCallback(() => {
         history.push('/search/'+term+'/'+type)
-    }, [history]);
+    }, [history, term, type]);
 
     const onSettings = useCallback(() => {
         history.push('/settings')
