@@ -27,14 +27,14 @@ function Navigation(props) {
                                 variant="outline-secondary"
                                 title="Dropdown"
                                 id="input-group-dropdown-1"
-                                onSelect={e => type = e}
+                                onSelect={e => setType(e)}
                                 >
                                     <Dropdown.Item eventKey="all">All</Dropdown.Item>
                                     <Dropdown.Item  eventKey="video">Video</Dropdown.Item>
                                     <Dropdown.Item eventKey="image">Images</Dropdown.Item>
                                     <Dropdown.Item eventKey="document">Documents</Dropdown.Item>
                                 </DropdownButton>
-                                <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={e => term = e.target.value} />
+                                <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={e => setTerm(e.target.value)} />
 
                             </InputGroup>
                         </Form>
