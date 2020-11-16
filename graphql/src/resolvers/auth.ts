@@ -11,7 +11,7 @@ export const authorize = (_:any, args:any)=>{
 
         const keys = Object.keys(key)
 
-        if(!contains('apiKey', keys) || !contains('secretKey', keys)){
+        if(!contains('accessKey', keys) || !contains('secretKey', keys)){
             throw new InvalidApiKeyError("Invalid API Key")
         }
 

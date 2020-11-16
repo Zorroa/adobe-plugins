@@ -8,6 +8,7 @@ export const typeDefs = gql`
         download(input: DownloadQuery): FilePath
         authorize(input: Credentials!): Status
         userAuthorization: CredentialsMeta
+        clearCache: DeletedFiles
         uploads: [File]
     }
 
@@ -35,6 +36,12 @@ export const typeDefs = gql`
     type CredentialsMeta{
         projectId: String
         zapiServer: String
+    }
+
+    type DeletedFiles{
+        total: String
+        deletedFiles: [String]
+        authFile: Boolean
     }
 
     type Status{

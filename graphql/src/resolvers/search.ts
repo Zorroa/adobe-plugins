@@ -17,7 +17,7 @@ export const getTumbnail = (response:any, req:any)=>{
         // use web-proxy image
         const proxyFile:any = find(propEq("name","web-proxy.jpg"))(files)
 
-        // req.params.id = proxyFile.id
+        req.params.id = proxyFile.id
 
         const filepath = await downloadThumbnail(req)
 

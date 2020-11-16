@@ -2,7 +2,7 @@ import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { typeDefs } from './schema.graphql'
 import { search } from './resolvers/search'
-import { file } from './resolvers/file'
+import { file, clearCache } from './resolvers/file'
 import { authorize, userAuthorization } from './resolvers/auth'
 import fs from 'fs'
 import config from '../config/config'
@@ -36,7 +36,8 @@ function run(){
             search,
             file,
             authorize,
-            userAuthorization
+            userAuthorization,
+            clearCache
         }
     }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "install": "(cd graphql && npm install) ; (cd premiere-ext && npm install); npm run build",
     "build": "(cd graphql && npm run build) ; (cd premiere-ext && npm run build)",
-    "test": "(cd graphql && npm test)"
+    "test": "(cd graphql && npm test) ; (cd premiere-ext && npm run test)"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,13 @@
   "bugs": {
     "url": "https://github.com/Zorroa/adobe-plugins/issues"
   },
-  "homepage": "https://github.com/Zorroa/adobe-plugins#readme"
+  "homepage": "https://github.com/Zorroa/adobe-plugins#readme",
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.21.5"
+  }
 }

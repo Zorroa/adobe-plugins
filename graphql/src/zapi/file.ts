@@ -10,6 +10,7 @@ export default {
             const url = API_SERVER+"/api/v3/files/_stream/"
 
             const fileId = req.params.id
+            console.log(fileId)
             const paths = fileId.split('/')
 
             const filename = paths[1]+"-"+paths[paths.length-1]
