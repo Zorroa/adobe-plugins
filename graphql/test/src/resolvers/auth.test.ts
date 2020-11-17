@@ -20,7 +20,6 @@ describe('src.resolvers.auth', ()=>{
 
         it("should write a user auth file", async ()=>{
             const res = authorize({}, args)
-            console.log(res)
             expect(res['status']).to.eq("ok")
         })
 

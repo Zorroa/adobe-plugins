@@ -5,12 +5,12 @@ import config from '../../config/config'
 const API_SERVER = config.zapiServer
 const DOMAIN = `${config.domain}:${config.port}/`
 export default {
-    download: (req:any) => {
-        return new Promise(async (resolve, reject)=>{
+    download: async (req:any) => {
+        const res = await new Promise(async (resolve, reject)=>{
             const url = API_SERVER+"/api/v3/files/_stream/"
 
             const fileId = req.params.id
-            console.log(fileId)
+            
             const paths = fileId.split('/')
 
             const filename = paths[1]+"-"+paths[paths.length-1]
@@ -19,7 +19,7 @@ export default {
 
             if (fs.existsSync(filePath)){
                 // return cached file
-                console.log(`returning cached file: ${filename}`)
+                // console.log(`returning cached file: ${filename}`)
                 resolve(DOMAIN+filename)
 
             }else{
@@ -34,8 +34,7 @@ export default {
                 response.body.on('error', ()=> reject())
                 response.body.pipe(stream)
             }
-
         })
-
+        return res
     }
 }

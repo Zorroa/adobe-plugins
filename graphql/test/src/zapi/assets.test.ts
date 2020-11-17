@@ -9,86 +9,133 @@ import assets from '../../../src/zapi/assets'
 
 chai.use(sinonChai);
 
-const REQUEST = {body: {foo: 'bar'}, params: {hash: "12345"}}
-const FAKE_FUNC = sinon.fake.returns([{_source: 1}, {_source: 2}])
+let Request = {body: {foo: 'bar'}, params: {hash: "12345"}}
+const FAKE_FUNC = sinon.fake.returns({ assets: [{ _source: 1 }, { _source: 2 }], scrollId: "1234" })
 
 describe('src.zapi.assets', ()=>{    
     describe("get", ()=>{
         let requestStub:any
-        let getAll:any
+        let fakeScroll: any
+        let fakeGetResponse:any
         beforeEach(()=>{
             requestStub = sinon.stub(axios, "get").returns(Promise.resolve({"data": {"data":true}}))
-            getAll = sinon.replace(utils, "getAll", FAKE_FUNC)
+            fakeScroll = sinon.replace(utils, "getResponse", FAKE_FUNC)
+            fakeGetResponse = sinon.replace(utils, "scroll", FAKE_FUNC)
         })
         afterEach(()=>{sinon.restore()})
 
-        it("should return getAll response", async()=>{
-            const req = mockReq(REQUEST)
+        it("should return get response", async()=>{
+            const req = mockReq(Request)
 
             const res = await assets.get(req)
             
-            expect(res.length).to.eq(2)
-            expect(res).to.contain(1)
-            expect(res).to.contain(2)
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
+        })
+
+        it("should return get scroll response", async()=>{
+            const req = mockReq({ body: { foo: 'bar' }, params: { term: "car", scrollId: "12345"}})
+
+            const res = await assets.get(req)
+            
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
         })
     })
 
     describe("getTerm", ()=>{
         let requestStub:any
-        let getAll:any
+        let fakeScroll: any
+        let fakeGetResponse:any
         beforeEach(()=>{
             requestStub = sinon.stub(axios, "post").returns(Promise.resolve({"data": {"data":true}}))
-            getAll = sinon.replace(utils, "getAll", FAKE_FUNC)
+            fakeGetResponse = sinon.replace(utils, "getResponse", FAKE_FUNC)
+            fakeScroll = sinon.replace(utils, "scroll", FAKE_FUNC)
         })
         afterEach(()=>{sinon.restore()})
         
         it("should return getAll response", async()=>{
-            const req = mockReq(REQUEST)
+            const req = mockReq(Request)
 
             const res = await assets.getTerm(req)
-            expect(res.length).to.eq(2)
-            expect(res).to.contain(1)
-            expect(res).to.contain(2)
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
+        })
+
+        it("should return getAll scroll response", async()=>{
+            const req = mockReq({ body: { foo: 'bar' }, params: { term: "car", scrollId: "12345"}})
+
+            const res = await assets.getTerm(req)
+            
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
         })
     })
 
     describe("getTypeTerm", ()=>{
         let requestStub:any
-        let getAll:any
+        let fakeScroll: any
+        let fakeGetResponse:any
         beforeEach(()=>{
             requestStub = sinon.stub(axios, "post").returns(Promise.resolve({"data": {"data":true}}))
-            getAll = sinon.replace(utils, "getAll", FAKE_FUNC)
+            fakeGetResponse = sinon.replace(utils, "getResponse", FAKE_FUNC)
+            fakeScroll = sinon.replace(utils, "scroll", FAKE_FUNC)
         })
         afterEach(()=>{sinon.restore()})
         
         it("should return getAll response", async()=>{
-            const req = mockReq(REQUEST)
+            const req = mockReq(Request)
 
             const res = await assets.getTypeTerm(req)
-            expect(res.length).to.eq(2)
-            expect(res).to.contain(1)
-            expect(res).to.contain(2)
+
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
+        })
+
+        it("should return getAll scroll response", async()=>{
+            const req = mockReq({ body: { foo: 'bar' }, params: { term: "car", type:"video", scrollId: "12345"}})
+
+            const res = await assets.getTypeTerm(req)
+            
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
         })
     })
 
     describe("similaritySearch", ()=>{
         let requestStub:any
-        let getAll:any
-
+        let fakeScroll: any
+        let fakeGetResponse:any
+        let req:any
         beforeEach(()=>{
-            requestStub = sinon.stub(axios, "post").returns(Promise.resolve(REQUEST))
-            getAll = sinon.replace(utils, "getAll", FAKE_FUNC)
+            requestStub = sinon.stub(axios, "post").returns(Promise.resolve(Request))
+            fakeGetResponse = sinon.replace(utils, "getResponse", FAKE_FUNC)
+            fakeScroll = sinon.replace(utils, "scroll", FAKE_FUNC)
+            req = mockReq(Request)
         })
         afterEach(()=>{sinon.restore()})
         
         it("should return getAll response", async()=>{
-            const req = mockReq(REQUEST)
+            const res = await assets.similaritySearch(req)
 
-            const res = await assets.getTypeTerm(req)
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
+        })
 
-            expect(res.length).to.eq(2)
-            expect(res).to.contain(1)
-            expect(res).to.contain(2)
+        it("should return getAll scroll response", async()=>{
+            
+            const res = await assets.similaritySearch(Request)
+            
+            expect(res['assets'].length).to.eq(2)
+            expect(res['scrollId']).to.eq("1234")
+            expect(res['assets'][0]['_source']).to.eq(1)
         })
     })
 })

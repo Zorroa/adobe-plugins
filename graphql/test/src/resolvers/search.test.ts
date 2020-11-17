@@ -42,7 +42,7 @@ describe('src.resolvers.search', ()=>{
             }]}
           ]
         const filePath = "http://localhost/fakepath.jpg"
-        const FAKE_FUNC = sinon.fake.returns(new Promise((res, rej)=>{res(filePath)}))
+        const FAKE_FUNC = sinon.fake.returns(filePath)
         beforeEach(()=>{
             // sinon.stub(zfile, "download").returns(Promise.resolve(filePath))
             sinon.replace(zfile, "download", FAKE_FUNC)
@@ -53,7 +53,7 @@ describe('src.resolvers.search', ()=>{
 
         it("should return asset with thumbnail path", async()=>{
             const res = await getTumbnail(assets, {params: {id: ""}})
-            Promise.all(res).then(data=>{
+            Promise.all(res).then((data:any) => {
                 expect(data[0]['id']).to.eq("u1RZTVydMbIemfaext2kRCcrN6NNeYJr")
                 expect(data[0]['thumbnail']).to.eq("http://localhost/fakepath.jpg")
             })
@@ -63,7 +63,7 @@ describe('src.resolvers.search', ()=>{
     })
     
     describe("search typeterm", ()=>{
-        const FAKE_FUNC = sinon.fake.returns([1,2,3])
+        const FAKE_FUNC = sinon.fake.returns({assets:[1,2,3], scrollId: "1234"})
         const args = {input:{
             term: "car",
             type: "video",
@@ -86,7 +86,7 @@ describe('src.resolvers.search', ()=>{
     })
 
     describe("search term", ()=>{
-        const FAKE_FUNC = sinon.fake.returns([1,2,3])
+        const FAKE_FUNC = sinon.fake.returns({assets:[1,2,3], scrollId: "1234"})
         const args = {input:{
             term: "car",
             getThumbnail: false
@@ -105,6 +105,5 @@ describe('src.resolvers.search', ()=>{
             expect(res['assets']).to.contain(2)
             expect(res['assets']).to.contain(3)
         })
-
     })
 })
