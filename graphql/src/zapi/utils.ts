@@ -1,10 +1,18 @@
 import axios from 'axios'
 import config from '../../config/config'
 import { pluck } from 'ramda'
+import request from './request'
+import queries from './queries'
+
 const API_SERVER = config.zapiServer
 
 // elastic search similarity query
-export function similarityQuery(hash:string):object{
+/**
+ * @deprecated
+ * @param  {string} hash Similarity hash
+ * @returns object
+ */
+export function similarityQuery(hash: string): object {
     return {
         "script_score": {
             "query": {
@@ -14,9 +22,9 @@ export function similarityQuery(hash:string):object{
                 "source": "similarity",
                 "lang": "zorroa-similarity",
                 "params": {
-                "minScore": 0.75,
-                "field": "analysis.zvi-image-similarity.simhash",
-                "hashes":  [hash]
+                    "minScore": 0.75,
+                    "field": "analysis.zvi-image-similarity.simhash",
+                    "hashes": [hash]
                 }
             },
             "boost": 1.0,
@@ -26,30 +34,43 @@ export function similarityQuery(hash:string):object{
 }
 
 // get next page
-export async function scroll(scrollId:string, headers:any){
-    const response = await axios.post(API_SERVER+"/api/v3/assets/_search/scroll", {
-        "scroll": "1m",
-        "scroll_id": scrollId
-    }, {headers})
-    return response
+/** Gets more assets from the scrollId
+ * @param  {string} scrollId
+ * @param  {any} headers
+ * @returns {object} Response data
+ */
+export async function scroll(scrollId: string) {
+    const url = "/api/v3/assets/_search/scroll"
+    const query = queries.scroll(scrollId)
+
+    return request.post(url, query)
 }
 
 // delete scroll id
-export async function deleteScrollId(scrollId:string, headers:object){
-    const response = await axios.request({
-        method: "delete",
-        url: API_SERVER+"/api/v3/assets/_search/scroll",
-        data: {"scroll_id": scrollId},
-        headers
-    })
+/** Deletes the scrollId on the server
+ * @param  {string} scrollId
+ * @param  {object} headers
+ * @returns {object} Response data
+ */
+export async function deleteScrollId(scrollId: string) {
+    const url = "/api/v3/assets/_search/scroll"
+    const data = { "scroll_id": scrollId }
+
+    const response: any = await request.delete(url, data)
+
     return response.data
 }
-
-export function getResponse (response:any) {
+/**
+ * Plucks all assets and scrollId
+ * @param  {object} response ZAPI response object
+ * @returns {[object]} assets
+ * @returns {string} scrollId
+ */
+export function getResponse(response: any) {
     const hits: [] = response.data.hits.hits
 
     const assets = pluck("_source", hits)
     const scrollId = response.data._scroll_id
 
-    return {assets, scrollId}
+    return { assets, scrollId }
 }

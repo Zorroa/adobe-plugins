@@ -1,54 +1,55 @@
-import {expect} from 'chai'
-import {describe} from 'mocha'
+import { expect } from 'chai'
+import { describe } from 'mocha'
 import sinon from 'sinon'
-import axios from 'axios'
+import { similarityQuery } from '../../../src/zapi/queries'
+import request from '../../../src/zapi/request'
 import * as utils from '../../../src/zapi/utils'
 
-const HEADER = {"headers": {"Authorization": "Bearer TOKEN"}}
+const HEADER = { "headers": { "Authorization": "Bearer TOKEN" } }
 
-describe('src.zapi.utils', ()=>{
-    describe("similarityQuery", ()=>{
-        const sim:object = utils.similarityQuery("12345")
-        it("should return 1 list item", ()=>{
+describe('src.zapi.utils', () => {
+    describe("similarityQuery", () => {
+        const sim: object = similarityQuery("12345")
+        it("should return 1 list item", () => {
             expect(sim['script_score']['script']['params']['hashes'].length).to.equal(1)
         })
-        it("should return hash", ()=>{
+        it("should return hash", () => {
             expect(sim['script_score']['script']['params']['hashes'][0]).to.equal('12345')
         })
     })
 
-    describe("deleteScrollId", async ()=>{
-        let requestStub:any
-        beforeEach(()=>{
-            requestStub = sinon.stub(axios, "request").returns(Promise.resolve({"data": {"data":true}}))
+    describe("deleteScrollId", async () => {
+        const FAKE_DELETE = sinon.fake.returns({ "data": { "data": true } })
+        beforeEach(() => {
+            sinon.replace(request, "delete", FAKE_DELETE)
         })
-        afterEach(()=>{
-            requestStub.restore()
-        })        
+        afterEach(() => {
+            sinon.restore()
+        })
 
-        it("should have data object", async ()=>{    
-            const res = await utils.deleteScrollId("12345", HEADER)
+        it("should have data object", async () => {
+            const res = await utils.deleteScrollId("1234x5")
             expect(res).to.have.key("data")
         })
-        it("should contain true", async ()=>{    
-            const res = await utils.deleteScrollId("12345", HEADER)
+        it("should contain true", async () => {
+            const res = await utils.deleteScrollId("12345")
             expect(res["data"]).to.equal(true)
         })
     })
 
-    describe("scroll", async ()=>{
-        const SCROLL_ID:string = "123456"
-        let requestStub:any
-        let response:object = {"data": {"_scroll_id":SCROLL_ID, "hits":{"hits":[1,2,3]}}}
-        beforeEach(()=>{
-            requestStub = sinon.stub(axios, "post").returns(Promise.resolve(response))
+    describe("scroll", async () => {
+        const SCROLL_ID: string = "123456"
+        let response: object = { "data": { "_scroll_id": SCROLL_ID, "hits": { "hits": [1, 2, 3] } } }
+        const FAKE_DELETE = sinon.fake.returns(response)
+        beforeEach(() => {
+            sinon.replace(request, "post", FAKE_DELETE)
         })
-        afterEach(()=>{
-            requestStub.restore()
-        })        
+        afterEach(() => {
+            sinon.restore()
+        })
 
-        it("should have keys _scroll_id & hits", async ()=>{    
-            const res = await utils.scroll(SCROLL_ID, HEADER)
+        it("should have keys _scroll_id & hits", async () => {
+            const res = await utils.scroll(SCROLL_ID)
             expect(res['data']).to.have.keys("_scroll_id", "hits")
             expect(res['data']["_scroll_id"]).to.equal(SCROLL_ID)
         })

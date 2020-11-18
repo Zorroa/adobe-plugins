@@ -56,6 +56,8 @@ export const typeDefs = gql`
     type AssetsWithMeta {
         assets: [Asset]
         scrollId: ID
+        total: Int
+        count: Int
     }
 
     type Asset {

@@ -1,87 +1,100 @@
-import axios from 'axios'
-import config from '../../config/config'
-import { getResponse, similarityQuery, scroll} from './utils'
+import request from './request'
+import queries from './queries'
+import { getResponse, scroll, deleteScrollId } from './utils'
 
-const API_SERVER = config.zapiServer
 const TIMEOUT: string = '1m'
-
-
 export default {
-    get: async (req: any) => {
+    /**
+     * @param  {any} req 
+     */
+    get: async (scrollId?: string) => {
         let assets: any
-        let { scrollId } = req.params
         let response: any
-        
-        if (scrollId) 
-            response = scroll(scrollId, req.zmlpHeader)
+
+        if (scrollId)
+            response = await scroll(scrollId)
         else
-            response = await axios.get(API_SERVER + "/api/v3/assets/_search", { headers: req.zmlpHeader })    
-        
+            response = await request.get("/api/v3/assets/_search")
+
         const p = getResponse(response)
         assets = p.assets
         scrollId = p.scrollId
-        
-        return {assets, scrollId}
+
+        if (assets.length == 0) {
+            deleteScrollId(scrollId)
+        }
+
+        return { assets, scrollId }
     },
 
-    getTerm: async (req: any) => {
+    getTerm: async (term: string, scrollId?: string) => {
         let assets: any
-        let {term, scrollId} = req.params
         let response: any
 
+        try {
+            if (scrollId)
+                response = await scroll(scrollId)
+            else {
+                const query = queries.term(term)
+                const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+                response = await request.post(url, query)
+            }
+
+            const p = getResponse(response)
+            assets = p.assets
+
+            if (assets.length == 0) {
+                deleteScrollId(scrollId)
+            }
+
+            return { assets, scrollId: p.scrollId }
+        } catch (err) {
+            return { assets, scrollId, err }
+        }
+    },
+
+    getTypeTerm: async (term: string, type: string, scrollId?: string) => {
+        let response: any
+        let assets: any
+
         if (scrollId)
-            response = scroll(scrollId, req.zmlpHeader)
+            response = await scroll(scrollId)
         else {
-            const query = { "query": { "simple_query_string": { "query": term } } }
-            response = await axios.post(API_SERVER + "/api/v3/assets/_search?scroll=" + TIMEOUT,
-                query, { headers: req.zmlpHeader })
+            const query = queries.termType(term, type)
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+            response = await request.post(url, query)
+        }
+
+        const p = getResponse(response)
+        assets = p.assets
+
+        if (assets.length == 0) {
+            deleteScrollId(scrollId)
+        }
+
+        return { assets, scrollId }
+    },
+
+    similaritySearch: async (hash: string, scrollId?: string) => {
+        let response: any
+        let assets: any
+
+        if (scrollId)
+            response = await scroll(scrollId)
+        else {
+            const query = queries.similarity(hash)
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+            response = await request.post(url, query)
         }
 
         const p = getResponse(response)
         assets = p.assets
         scrollId = p.scrollId
 
-        return {assets, scrollId}
-    },
-
-    getTypeTerm: async(req:any)=>{
-        let { term, type, scrollId } = req.params
-        let response: any
-        let assets: any
-        if (scrollId)
-            response = scroll(scrollId, req.zmlpHeader)
-        else {
-            const query = {"query": {"bool": {"must": [
-                {"match": {"media.type": type}},
-                {"simple_query_string": {"query": term}}]}}}
-
-            response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT,
-                query, {headers: req.zmlpHeader})
-        }
-        const p = getResponse(response)
-        assets = p.assets
-        scrollId = p.scrollId
-
-        return {assets, scrollId}
-    },
-
-    similaritySearch: async (req: any) => {
-        let { hash, scrollId } = req.params
-        let response: any
-        let assets: any
-        if (scrollId)
-            response = scroll(scrollId, req.zmlpHeader)
-        else {
-            const query = { "query": { "bool": { "must": [similarityQuery(hash)] } } }
-
-            response = await axios.post(API_SERVER + "/api/v3/assets/_search?scroll=" + TIMEOUT,
-                query, { headers: req.zmlpHeader })
+        if (assets.length == 0) {
+            deleteScrollId(scrollId)
         }
 
-        const p = getResponse(response)
-        assets = p.assets
-        scrollId = p.scrollId
-
-        return {assets, scrollId}
+        return { assets, scrollId }
     }
 }
