@@ -34,20 +34,68 @@ export const authorize = () => {
   return send(query)
 }
 
+export const scroll = (scrollId) => {
+  const query = `query{scroll(input:{scrollId: "${scrollId}", getThumbnail: true}){
+              scrollId
+              total
+              count
+              assets{
+                id
+                thumbnail
+                files{ size name mimetype id category attrs { width height } }
+                source{ path extension filename mimetype filesize }
+                media{ orientation pageNumber aspect width length timeCreated type pageStack height }
+                files{ id category mimetype name }
+                analysis{
+                  gcpVisionLabelDetection{ count type predictions{ score label } }
+                  gcpVisionDocTextDetection{ words type content }
+                  gcpVisionImageTextDetection{ words type content }
+                  zviLabelDetection{ count type predictions{ score label } }
+                  zviImageSimilarity{ type simhash }}}
+              }}`
+  return send(query)
+}
+
 export const search = (term, type) => {
   let query = ""
   if (term && type !== "all") {
-    query =
-      `query{search(input:{term: "` +
-      term +
-      `", type: "` +
-      type +
-      `",getThumbnail:true}){assets{id, thumbnail, proxy, files{category, id, mimetype, size}}}}`
+    query = `query{search(input:{term: "${term}", type:"${type}", getThumbnail: true}){
+              scrollId
+              total
+              count
+              assets{
+                id
+                thumbnail
+                files{ size name mimetype id category attrs { width height } }
+                source{ path extension filename mimetype filesize }
+                media{ orientation pageNumber aspect width length timeCreated type pageStack height }
+                files{ id category mimetype name }
+                analysis{
+                  gcpVisionLabelDetection{ count type predictions{ score label } }
+                  gcpVisionDocTextDetection{ words type content }
+                  gcpVisionImageTextDetection{ words type content }
+                  zviLabelDetection{ count type predictions{ score label } }
+                  zviImageSimilarity{ type simhash }}}
+              }}`
   } else {
-    query =
-      `query{search(input:{term: "` +
-      term +
-      `",getThumbnail:true}){assets{id, thumbnail, proxy, files{category, id, mimetype, size}}}}`
+    query = `query{search(input:{term: "${term}", getThumbnail: true}){
+              scrollId
+              total
+              count
+              assets{
+                id
+                thumbnail
+                files{ size name mimetype id category attrs { width height } }
+                source{ path extension filename mimetype filesize }
+                media{ orientation pageNumber aspect width length timeCreated type pageStack height }
+                files{ id category mimetype name }
+                analysis{
+                  gcpVisionLabelDetection{ count type predictions{ score label } }
+                  gcpVisionDocTextDetection{ words type content }
+                  gcpVisionImageTextDetection{ words type content }
+                  zviLabelDetection{ count type predictions{ score label } }
+                  zviImageSimilarity{ type simhash }}}
+              }}`
   }
 
   return send(query)

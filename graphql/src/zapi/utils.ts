@@ -1,4 +1,3 @@
-import axios from 'axios'
 import config from '../../config/config'
 import { pluck } from 'ramda'
 import request from './request'
@@ -68,9 +67,18 @@ export async function deleteScrollId(scrollId: string) {
  */
 export function getResponse(response: any) {
     const hits: [] = response.data.hits.hits
-
-    const assets = pluck("_source", hits)
+    const total: number = response.data.hits.total.value
+    const count: number = response.data.hits.hits.length
     const scrollId = response.data._scroll_id
 
-    return { assets, scrollId }
+    let assets = hits.map((asset: any) => {
+        asset._source.id = asset._id
+        return asset
+    })
+
+    assets = pluck("_source", hits)
+
+
+    return { assets, scrollId, total, count }
 }
+

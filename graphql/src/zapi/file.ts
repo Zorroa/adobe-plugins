@@ -6,7 +6,7 @@ import { genToken } from './index'
 const API_SERVER = config.zapiServer
 const DOMAIN = `${config.domain}:${config.port}/`
 export default {
-    /** Downloads a file from ZMLP.  
+    /** Downloads a file from ZMLP.
      *  Note: download seems to work best with Fetch
      * @param  {string} id File ID
      */

@@ -27,9 +27,9 @@ export const clearCache = async (_: any, args: any) => {
     const fileList = fs.readdirSync(process.env.PUBLIC_FOLDER)
 
     // remove files
-    fileList.forEach(file => {
-        deletedFiles.push(file)
-        fs.unlinkSync(`${process.env.PUBLIC_FOLDER}/${file}`)
+    fileList.forEach(item => {
+        deletedFiles.push(item)
+        fs.unlinkSync(`${process.env.PUBLIC_FOLDER}/${item}`)
     })
 
     // remove auth key

@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express'
 
 export const typeDefs = gql`
     type Query {
+        scroll(input: ScrollQuery): AssetsWithMeta
         search(input: SearchQuery): AssetsWithMeta
         simSearch(input: SimQuery): AssetsWithMeta
         file(input: DownloadQuery): FilePath
@@ -24,6 +25,11 @@ export const typeDefs = gql`
 
     input SimQuery {
         similarity: String!
+        getThumbnail: Boolean
+    }
+
+    input ScrollQuery {
+        scrollId: String
         getThumbnail: Boolean
     }
 
@@ -104,7 +110,7 @@ export const typeDefs = gql`
     type Media {
         orientation: String
         pageNumber: Int
-        length: Int
+        length: Float
         aspect: Float
         timeCreated: String
         width: Float

@@ -1,5 +1,6 @@
 import zassets from '../zapi/assets'
 import zfile from '../zapi/file'
+import * as utils from '../zapi/utils'
 import { find, propEq } from 'ramda'
 
 /**
@@ -20,13 +21,13 @@ export const downloadThumbnail = (id: string) => {
  */
 export const addTumbnail = (assets: any) => {
 
-    let response: any[] = []
+    const response: any[] = []
 
     assets.forEach((asset: any) => {
 
         const { files } = asset
 
-        if (files != undefined) {
+        if (files !== undefined) {
             // use web-proxy image
             const proxyFile: any = find(propEq("name", "web-proxy.jpg"))(files)
 
@@ -34,7 +35,7 @@ export const addTumbnail = (assets: any) => {
 
             const id = files[0].id.split("/")[1]
 
-            asset['thumbnail'] = filepath
+            asset.thumbnail = filepath
 
             response.push(asset)
         }
@@ -43,27 +44,51 @@ export const addTumbnail = (assets: any) => {
     return response
 }
 /**
+ * Scrolls the previously searched query
+ * @param  {any} _
+ * @param  {any} args GraphQL arguments
+ * @returns {[object],string} Assets list and scrollID
+ */
+export const scroll = async (_: any, args: any) => {
+    const { scrollId, getThumbnail } = args.input
+
+    const response = await utils.scroll(scrollId)
+
+    const data = utils.getResponse(response)
+
+    if (!data.assets.length) {
+        utils.deleteScrollId(scrollId)
+    }
+
+    if (getThumbnail) {
+        data.assets = addTumbnail(data.assets)
+    }
+
+    return { scrollId, ...data }
+}
+
+/**
  * Search term and term/type
  * @param  {any} _
  * @param  {object} args GraphQL arguments
  * @returns {[object],scrollId} Assets list and scrollID
  */
 export const search = async (_: any, args: any) => {
-    const { term, type, scrollId, getThumbnail } = args.input
+    const { term, type, getThumbnail } = args.input
 
-    let response: any;
+    let response: any
 
     if (term && type) {
-        response = await zassets.getTypeTerm(term, type, scrollId)
+        response = await zassets.getTypeTerm(term, type)
     } else if (term) {
-        response = await zassets.getTerm(term, scrollId)
+        response = await zassets.getTerm(term)
     }
+
+
 
     if (getThumbnail) {
         response.assets = addTumbnail(response.assets)
     }
 
-    const { assets } = response
-
-    return { assets, scrollId: response.scrollId }
+    return { ...response }
 }

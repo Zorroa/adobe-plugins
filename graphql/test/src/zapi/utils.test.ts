@@ -4,6 +4,7 @@ import sinon from 'sinon'
 import { similarityQuery } from '../../../src/zapi/queries'
 import request from '../../../src/zapi/request'
 import * as utils from '../../../src/zapi/utils'
+import zviData from '../../data/zviAssets'
 
 const HEADER = { "headers": { "Authorization": "Bearer TOKEN" } }
 
@@ -53,6 +54,15 @@ describe('src.zapi.utils', () => {
             expect(res['data']).to.have.keys("_scroll_id", "hits")
             expect(res['data']["_scroll_id"]).to.equal(SCROLL_ID)
         })
+    })
 
+    describe("getResponse", async () => {
+
+        it("should have keys scrollId, count, total, assets", () => {
+            const res = utils.getResponse(zviData)
+
+            expect(res).to.have.keys("total", "count", "scrollId", "assets")
+            expect(res["assets"].length).to.have.eq(10)
+        })
     })
 })

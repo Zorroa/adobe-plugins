@@ -1,4 +1,4 @@
-{
+export default {
   "data": {
     "search": {
       "scrollId": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAADBR1FkZ3U0doUUFfUzZ5dTRBWlN0cGRkYWcAAAAAAAqUuRZERjJsV2l3elF5QzVOZ1dQd0FOaUJR",
