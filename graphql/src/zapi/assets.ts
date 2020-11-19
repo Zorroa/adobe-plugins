@@ -1,58 +1,79 @@
-import axios from 'axios'
-import config from '../../config/config'
-import {pluck} from 'ramda'
-import { getAll, similarityQuery } from './utils'
+import request from './request'
+import queries from './queries'
+import { getResponse, scroll, deleteScrollId } from './utils'
 
-const API_SERVER = config.zapiServer
-const TIMEOUT:string = '1m'
-
+const TIMEOUT: string = '1m'
 export default {
-    get: async(req:any) => {
-        const response = await axios.get(API_SERVER+"/api/v3/assets/_search", {headers: req.zmlpHeader})
+    /**
+     * @param  {any} req
+     */
+    get: async () => {
 
-        const data = await getAll(response, req.zmlpHeader)
+        try {
+            let response = await request.get("/api/v3/assets/_search?scroll=" + TIMEOUT)
 
-        return pluck("_source", data)
+            response = getResponse(response)
+
+            return { ...response }
+
+        } catch (err) {
+            return err
+        }
     },
 
-    getTerm: async(req:any)=>{
-        const query = {"query": {"simple_query_string": {"query": req.params.term}}}
-        const response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT,
-                                        query,
-                                        {headers: req.zmlpHeader})
+    getTerm: async (term: string) => {
+        let response: any
+        try {
 
-        const data = await getAll(response.data, req.zmlpHeader)
+            const query = queries.term(term)
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+            response = await request.post(url, query)
 
-        return pluck("_source", data)
+            response = getResponse(response)
+
+            return { ...response }
+
+        } catch (err) {
+
+            return err
+        }
     },
 
-    getTypeTerm: async(req:any)=>{
-        const type = req.params.type
-        const term = req.params.term
-        const query = {"query": {"bool": {"must": [
-            {"match": {"media.type": type}},
-            {"simple_query_string": {"query": term}}]}}}
+    getTypeTerm: async (term: string, type: string) => {
+        try {
 
-        const response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT,
-            query,
-            {headers: req.zmlpHeader})
+            const query = queries.termType(term, type)
 
-        const data = await getAll(response.data, req.zmlpHeader)
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
 
-        return pluck("_source", data)
+            let response = await request.post(url, query)
+
+            response = getResponse(response)
+
+            return { ...response }
+
+        } catch (err) {
+
+            return err
+
+        }
     },
 
-    similaritySearch: async(req:any)=>{
-        const hash = req.params.hash
+    similaritySearch: async (hash: string) => {
+        try {
 
-        const query = {"query": {"bool": {"must": [similarityQuery(hash)]}}}
+            const query = queries.similarity(hash)
 
-        const response = await axios.post(API_SERVER+"/api/v3/assets/_search?scroll="+TIMEOUT,
-            query,
-            {headers: req.zmlpHeader})
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+            let response = await request.post(url, query)
 
-        const data = await getAll(response.data, req.zmlpHeader)
+            response = getResponse(response)
 
-        return pluck("_source", data)
+            return { ...response }
+
+        } catch (err) {
+            return err
+        }
+
     }
 }

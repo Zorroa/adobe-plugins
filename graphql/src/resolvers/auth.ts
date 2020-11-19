@@ -1,17 +1,22 @@
 import fs from 'fs'
 import config from '../../config/config'
-import {contains} from 'ramda'
+import { contains } from 'ramda'
 
-export class InvalidApiKeyError extends Error{}
+export class InvalidApiKeyError extends Error { }
 
-export const authorize = (_:any, args:any)=>{
+/**
+ * Accepts ZMLP APIKey and saves it locally
+ * @param  {any} _ parent
+ * @param  {object} args GraphQL arguments
+ */
+export const authorize = (_: any, args: any) => {
     const { zapiKey, zapiServer, projectId } = args.input;
-    try{
+    try {
         const key = JSON.parse(decodeURIComponent(zapiKey))
 
         const keys = Object.keys(key)
 
-        if(!contains('apiKey', keys) || !contains('secretKey', keys)){
+        if (!contains('accessKey', keys) || !contains('secretKey', keys)) {
             throw new InvalidApiKeyError("Invalid API Key")
         }
 
@@ -21,23 +26,26 @@ export const authorize = (_:any, args:any)=>{
 
         // cache file
         fs.writeFileSync(process.env.USER_AUTH_FILE, JSON.stringify(config))
-        return {status: "ok"}
-    }catch(err){
-        return {status: err}
+        return { status: "ok" }
+    } catch (err) {
+        return { status: err }
     }
 }
+/**
+ * @param  {any} _ parent
+ * @param  {object} args - GraphQL arguments
+ */
+export const userAuthorization = async (_: any, args: any) => {
 
-export const userAuthorization = async(_:any, args:any)=>{
+    if (fs.existsSync(process.env.USER_AUTH_FILE)) {
+        const { zapiServer, projectId } = JSON.parse(fs.readFileSync(process.env.USER_AUTH_FILE, "utf8"))
 
-    if(fs.existsSync(process.env.USER_AUTH_FILE)){
-        const {zapiServer, projectId} = JSON.parse(fs.readFileSync(process.env.USER_AUTH_FILE, "utf8"))
+        return { zapiServer, projectId }
 
-        return {zapiServer, projectId}
-
-    }else{
+    } else {
         const zapiServer = ""
         const projectId = ""
-        return {zapiServer, projectId}
+        return { zapiServer, projectId }
     }
 
 }

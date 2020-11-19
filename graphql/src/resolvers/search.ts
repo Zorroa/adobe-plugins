@@ -1,57 +1,94 @@
 import zassets from '../zapi/assets'
 import zfile from '../zapi/file'
-import {find, propEq } from 'ramda'
-import {genToken} from '../zapi/index'
+import * as utils from '../zapi/utils'
+import { find, propEq } from 'ramda'
 
-
-export const downloadThumbnail = async (req:any)=>{
-    const filePath = await zfile.download(req)
+/**
+ * Caches the download
+ * @param  {string} id File ID
+ * @return {string} file path
+ */
+export const downloadThumbnail = (id: string) => {
+    const filePath = zfile.download(id)
     return filePath
 }
 
-export const getTumbnail = (response:any, req:any)=>{
-    response = response.map(async(asset:any)=>{
+/**
+ * Get thumbnails for all assets
+ * @param  {[asset]} assets List of assets
+ * @param  {any} req Apollo Request object
+ * @returns {[asset]} List of assets
+ */
+export const addTumbnail = (assets: any) => {
 
-        const {files} = asset
+    const response: any[] = []
 
-        // use web-proxy image
-        const proxyFile:any = find(propEq("name","web-proxy.jpg"))(files)
+    assets.forEach((asset: any) => {
 
-        // req.params.id = proxyFile.id
+        const { files } = asset
 
-        const filepath = await downloadThumbnail(req)
+        if (files !== undefined) {
+            // use web-proxy image
+            const proxyFile: any = find(propEq("name", "web-proxy.jpg"))(files)
 
-        const id = files[0].id.split("/")[1]
+            const filepath = downloadThumbnail(proxyFile.id)
 
-        return {
-            id,
-            files,
-            thumbnail: filepath,
-            proxy: "proxy"
+            const id = files[0].id.split("/")[1]
+
+            asset.thumbnail = filepath
+
+            response.push(asset)
         }
     })
+
     return response
 }
+/**
+ * Scrolls the previously searched query
+ * @param  {any} _
+ * @param  {any} args GraphQL arguments
+ * @returns {[object],string} Assets list and scrollID
+ */
+export const scroll = async (_: any, args: any) => {
+    const { scrollId, getThumbnail } = args.input
 
-export const search = async(_:any, args:any)=>{
-    const {term, type, getThumbnail} = args.input
+    const response = await utils.scroll(scrollId)
 
-    const zmlpHeader = genToken()
+    const data = utils.getResponse(response)
 
-    let response;
-
-    const req = {zmlpHeader, params: {term, type}}
-
-    if (term && type){
-        response = await zassets.getTypeTerm(req)
-    }else if(term){
-        response = await zassets.getTerm(req)
+    if (!data.assets.length) {
+        utils.deleteScrollId(scrollId)
     }
 
-    if (getThumbnail)
-        response = await getTumbnail(response, req)
-
-    return {
-        assets: [...response]
+    if (getThumbnail) {
+        data.assets = addTumbnail(data.assets)
     }
+
+    return { scrollId, ...data }
+}
+
+/**
+ * Search term and term/type
+ * @param  {any} _
+ * @param  {object} args GraphQL arguments
+ * @returns {[object],scrollId} Assets list and scrollID
+ */
+export const search = async (_: any, args: any) => {
+    const { term, type, getThumbnail } = args.input
+
+    let response: any
+
+    if (term && type) {
+        response = await zassets.getTypeTerm(term, type)
+    } else if (term) {
+        response = await zassets.getTerm(term)
+    }
+
+
+
+    if (getThumbnail) {
+        response.assets = addTumbnail(response.assets)
+    }
+
+    return { ...response }
 }

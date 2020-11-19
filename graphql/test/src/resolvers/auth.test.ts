@@ -6,7 +6,7 @@ import {describe} from 'mocha'
 describe('src.resolvers.auth', ()=>{    
     describe("authorize", ()=>{
         let args = {input: {
-            zapiKey : encodeURIComponent(JSON.stringify({"apiKey": "key", "secretKey": "secret"})),
+            zapiKey : encodeURIComponent(JSON.stringify({"accessKey": "key", "secretKey": "secret"})),
             projectId : "67890", 
             zapiServer : "https://dev.api.zvi.zorroa.com"
         }}
@@ -20,7 +20,6 @@ describe('src.resolvers.auth', ()=>{
 
         it("should write a user auth file", async ()=>{
             const res = authorize({}, args)
-
             expect(res['status']).to.eq("ok")
         })
 

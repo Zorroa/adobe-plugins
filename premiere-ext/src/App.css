@@ -79,6 +79,7 @@ label {
 
 #settingsButton {
   margin-top: 8px;
+  margin-right: 15px;
 }
 
 nav {
@@ -114,4 +115,26 @@ path {
   top: 50%;
   left: 50%;
   position: absolute;
+}
+
+#setStatus {
+  color: green;
+}
+
+.breadcrumb {
+  background-color: #333 !important;
+  padding: 0px !important;
+  border-radius: 0px !important;
+}
+.note {
+  color: #999;
+}
+#backButton {
+  width: 100px;
+  height: 20px;
+  background-color: lightslategray;
+}
+#settingsButton {
+  background-color: #333;
+  border-color: #333;
 }

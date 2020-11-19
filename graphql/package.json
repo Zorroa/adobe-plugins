@@ -12,7 +12,7 @@
     "build:dev": "nodemon 'main.ts' --exec 'ts-node' main.ts -e ts,graphql",
     "dev": "NODE_ENV=dev ts-node-dev main.ts",
     "tddtests": "NODE_ENV=test USER_AUTH_FILE='./test/userauth-test.json' mocha --require ts-node/register --extensions ts,tsx --watch --watch-files test 'test/**/*.test.ts'",
-    "tdd": "NODE_ENV=test mocha --require ts-node/register --extensions ts,tsx --watch --watch-files src 'test/**/*.test.ts'",
+    "tdd": "NODE_ENV=test USER_AUTH_FILE='./test/userauth-test.json' mocha --require ts-node/register --extensions ts,tsx --watch --watch-files src 'test/**/*.test.ts'",
     "test": "NODE_ENV=test USER_AUTH_FILE=./test/userauth-test.json mocha -r ts-node/register --extensions ts,tsx 'test/**/*.test.ts'",
     "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
@@ -51,7 +51,7 @@
     "sinon-chai": "^3.5.0",
     "sinon-express-mock": "^2.2.1",
     "ts-node": "^9.0.0",
-    "ts-node-dev": "^1.0.0-pre.44",
+    "ts-node-dev": "^1.0.0",
     "tslint": "^6.1.2",
     "typescript": "^3.9.3"
   }

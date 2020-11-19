@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Video/> renders correctly 1`] = `
+<div
+  className="css-0"
+>
+  <div
+    className="css-1asah85"
+  />
+  <div
+    className="css-bz4xzu"
+  />
+  <div
+    className="css-1asah85"
+  />
+</div>
+`;
