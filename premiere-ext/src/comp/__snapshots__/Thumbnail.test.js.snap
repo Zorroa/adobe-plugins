@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Thumbnail/> should render properly 1`] = `
+<a
+  className="video-link"
+  href="/video"
+  onClick={[Function]}
+>
+  <img
+    alt="http://helloworld.jpg"
+    className="responsive-image"
+    id="23555"
+    src="http://helloworld.jpg"
+  />
+</a>
+`;

@@ -1,14 +1,18 @@
 import renderer from "react-test-renderer"
+import { BrowserRouter as Router } from "react-router-dom"
 import Thumbnail from "./Thumbnail"
 
-const asset = {
-  id: "23555",
-  thumbnail: "http://helloworld.jpg",
-}
-
 describe("<Thumbnail/>", () => {
+  const asset = {
+    id: "23555",
+    thumbnail: "http://helloworld.jpg",
+  }
   it("should render properly", () => {
-    // const wrapper = renderer.create(<Thumbnail asset={asset} />)
-    // expect(wrapper.toJSON()).toMatchSnapshot()
+    const wrapper = renderer.create(
+      <Router>
+        <Thumbnail asset={asset} />
+      </Router>
+    )
+    expect(wrapper.toJSON()).toMatchSnapshot()
   })
 })
