@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Button } from "react-bootstrap"
 import Thumbnail from "../comp/Thumbnail"
 import { downloadFile, getProxy, addToWorkspace, search, scroll } from "../Zapi"
@@ -12,15 +12,6 @@ function Search(props) {
   const [hasMore, setHasMore] = useState(false)
   const [scrollId, setScrollId] = useState("")
   const [type, setType] = useState(params.type)
-
-  useEffect(() => {
-    loadAssets(term, type)
-  }, [])
-
-  useEffect(() => {
-    setType(type)
-    setTerm(term)
-  }, [term, type, setTerm, setType])
 
   const onAdd = async (files) => {
     const id = getProxy(files)["id"]
@@ -46,7 +37,7 @@ function Search(props) {
     setShowLoading(false)
   }
 
-  const loadAssets = async (term, type) => {
+  const loadAssets = useCallback(async () => {
     setShowLoading(true)
 
     try {
@@ -64,7 +55,13 @@ function Search(props) {
       console.log(err)
     }
     setShowLoading(false)
-  }
+  }, [term, type, assets])
+
+  useEffect(() => {
+    setType(type)
+    setTerm(term)
+    loadAssets(term, type)
+  }, [term, type, setTerm, setType, loadAssets])
 
   return (
     <div className="container">
