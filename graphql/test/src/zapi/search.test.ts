@@ -4,7 +4,7 @@ import { describe } from 'mocha'
 import sinon from 'sinon'
 import axios from 'axios'
 import * as utils from '../../../src/zapi/utils'
-import assets from '../../../src/zapi/assets'
+import search from '../../../src/zapi/search'
 
 chai.use(sinonChai);
 
@@ -23,7 +23,7 @@ describe('src.zapi.assets', () => {
 
         it("should return get response", async () => {
 
-            const res = await assets.get()
+            const res = await search.get()
 
             expect(res['assets'].length).to.eq(2)
             expect(res['assets'][0]['_source']).to.eq(1)
@@ -41,7 +41,7 @@ describe('src.zapi.assets', () => {
 
         it("should return response", async () => {
 
-            const res = await assets.getTerm("bar")
+            const res = await search.getTerm("bar")
             expect(res['assets'].length).to.eq(2)
             expect(res['assets'][0]['_source']).to.eq(1)
         })
@@ -57,7 +57,7 @@ describe('src.zapi.assets', () => {
         afterEach(() => { sinon.restore() })
 
         it("should return response", async () => {
-            const res = await assets.getTypeTerm("car", "video")
+            const res = await search.getTypeTerm("car", "video")
             expect(res['assets'].length).to.eq(2)
             expect(res['assets'][0]['_source']).to.eq(1)
         })
@@ -73,7 +73,7 @@ describe('src.zapi.assets', () => {
         afterEach(() => { sinon.restore() })
 
         it("should return getAll response", async () => {
-            const res = await assets.similaritySearch("somehash")
+            const res = await search.similaritySearch("somehash")
 
             expect(res['assets'].length).to.eq(2)
             expect(res['scrollId']).to.eq("1234")

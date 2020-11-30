@@ -5,12 +5,17 @@ export const typeDefs = gql`
         scroll(input: ScrollQuery): AssetsWithMeta
         search(input: SearchQuery): AssetsWithMeta
         simSearch(input: SimQuery): AssetsWithMeta
+        fileSim(input: FileSimQuery): AssetsWithMeta
         file(input: DownloadQuery): FilePath
         download(input: DownloadQuery): FilePath
         authorize(input: Credentials!): Status
         userAuthorization: CredentialsMeta
         clearCache: DeletedFiles
-        uploads: [File]
+        
+    }
+
+    input FileSimQuery{
+        base64Image: String!
     }
 
     input Credentials{

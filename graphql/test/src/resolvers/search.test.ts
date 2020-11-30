@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import * as s from '../../../src/resolvers/search'
+import * as sResolver from '../../../src/resolvers/search'
 import {
     downloadThumbnail,
     addTumbnail,
@@ -7,7 +7,8 @@ import {
     scroll
 } from '../../../src/resolvers/search'
 import zfile from '../../../src/zapi/file'
-import zassets from '../../../src/zapi/assets'
+import zData from '../../data/zviAssets'
+import zsearch from '../../../src/zapi/search'
 import * as utils from '../../../src/zapi/utils'
 import { expect } from 'chai'
 import { describe } from 'mocha'
@@ -33,42 +34,37 @@ describe('src.resolvers.search', () => {
         const FAKE_FUNC = sinon.fake.returns("http://localhost/fakepath.jpg")
         const FAKE_DELETE = sinon.fake()
         const FAKE_ADDTHUMBNAIL = sinon.fake()
-        const FAKE_RESPONSE = sinon.fake.returns({ assets: [1, 2, 3] })
-        const FAKE_SCROLL = sinon.fake.returns({ scrollId: "123456" })
+        const FAKE_SCROLL = sinon.fake.returns(zData)
         const FAKE_NO_ASSETS = sinon.fake.returns({ assets: [] })
 
         beforeEach(() => {
             sinon.replace(zfile, "download", FAKE_FUNC)
             sinon.replace(utils, "scroll", FAKE_SCROLL)
-            sinon.replace(s, 'addTumbnail', FAKE_ADDTHUMBNAIL)
+            sinon.replace(sResolver, 'addTumbnail', FAKE_ADDTHUMBNAIL)
         })
         afterEach(() => {
             sinon.restore()
         })
 
         it("should return assets", async () => {
-            sinon.replace(utils, "getResponse", FAKE_RESPONSE)
-            sinon.replace(utils, "deleteScrollId", FAKE_FUNC)
-
-
-            const res = await scroll({}, { input: { scrollId: "123456", getThumbnail: false } })
+            const res = await scroll({}, { input: { scrollId: zData.data._scroll_id, getThumbnail: false } })
             expect(res).to.contain.keys("assets", "scrollId", "total", "count")
-            expect(res['assets'].length).to.eq(3)
-            expect(res['scrollId']).to.eq("123456")
+            expect(res['assets'].length).to.eq(10)
+            expect(res['scrollId']).to.eq(zData.data._scroll_id)
         })
 
         it("should delete scrollId", async () => {
             sinon.replace(utils, "getResponse", FAKE_NO_ASSETS)
             sinon.replace(utils, "deleteScrollId", FAKE_DELETE)
 
-            const res = await scroll({}, { input: { scrollId: "123456", getThumbnail: false } })
+            await scroll({}, { input: { scrollId: "123456", getThumbnail: false } })
 
             expect(FAKE_DELETE.callCount).to.eq(1)
         })
 
         it("should call addThumbnails", async () => {
-            sinon.replace(utils, "getResponse", FAKE_RESPONSE)
-            const res = await scroll({}, { input: { scrollId: "123456", getThumbnail: true } })
+            const res = await scroll({}, { input: { scrollId: zData.data._scroll_id, getThumbnail: true } })
+            expect(res).to.contain.keys("assets", "scrollId", "total", "count")
             expect(FAKE_ADDTHUMBNAIL.callCount).to.eq(1)
         })
     })
@@ -90,18 +86,19 @@ describe('src.resolvers.search', () => {
                 }]
             }
         ]
-        const args = {
-            input: {
-                term: "car",
-                getThumbnail: true
-            }
+        const zAssets = {
+            "scrollId": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAADBR1FkZ3U0doUUFfUzZ5dTRBWlN0cGRkYWcAAAAAAAqUuRZERjJsV2l3elF5QzVOZ1dQd0FOaUJR",
+            "total": 100,
+            "count": 1,
+            "assets": assets
         }
         const filePath = "http://localhost/fakepath.jpg"
         const FAKE_FUNC = sinon.fake.returns(filePath)
-        const FAKE_GET_TERM = sinon.fake.returns({ assets: assets })
+        const FAKE_GET_TERM = sinon.fake.returns(zAssets)
         beforeEach(() => {
             sinon.replace(zfile, "download", FAKE_FUNC)
-            sinon.replace(zassets, "getTerm", FAKE_GET_TERM)
+            sinon.replace(zsearch, "getTerm", FAKE_GET_TERM)
+            sinon.replace(zsearch, "getTypeTerm", FAKE_GET_TERM)
         })
         afterEach(() => {
             sinon.restore()
@@ -114,28 +111,27 @@ describe('src.resolvers.search', () => {
             expect(res[0]['id']).to.eq('u1RZTVydMbIemfaext2kRCcrN6NNeYJr')
             expect(res[0]['thumbnail']).to.eq('http://localhost/fakepath.jpg')
             expect(res[0]['files'].length).to.eq(1)
-
         })
 
         it("should search term and get thumbnail", async () => {
-            const res = await search({}, args)
+            const res = await search({}, { input: { term: "car", getThumbnail: true } })
+
             expect(res).to.have.keys('assets', 'scrollId', 'total', 'count')
             expect(res['assets'].length).to.eq(1)
             expect(res['assets'][0]['id']).to.eq("u1RZTVydMbIemfaext2kRCcrN6NNeYJr")
             expect(res['assets'][0]['files'].length).to.eq(1)
             expect(res['assets'][0]['thumbnail']).to.eq("http://localhost/fakepath.jpg")
-            expect(res['scrollId']).to.eq(undefined)
+            expect(res['scrollId']).to.eq("DnF1ZXJ5VGhlbkZldGNoAgAAAAAADBR1FkZ3U0doUUFfUzZ5dTRBWlN0cGRkYWcAAAAAAAqUuRZERjJsV2l3elF5QzVOZ1dQd0FOaUJR")
         })
 
         it("should search term/type and get thumbnail", async () => {
-            args['type'] = "video"
-            const res = await search({}, args)
+            const res = await search({}, { input: { term: "car", type: "video", getThumbnail: true } })
             expect(res).to.have.keys('assets', 'scrollId', 'total', 'count')
             expect(res['assets'].length).to.eq(1)
             expect(res['assets'][0]['id']).to.eq("u1RZTVydMbIemfaext2kRCcrN6NNeYJr")
             expect(res['assets'][0]['files'].length).to.eq(1)
             expect(res['assets'][0]['thumbnail']).to.eq("http://localhost/fakepath.jpg")
-            expect(res['scrollId']).to.eq(undefined)
+            expect(res['scrollId']).to.eq("DnF1ZXJ5VGhlbkZldGNoAgAAAAAADBR1FkZ3U0doUUFfUzZ5dTRBWlN0cGRkYWcAAAAAAAqUuRZERjJsV2l3elF5QzVOZ1dQd0FOaUJR")
         })
 
     })
@@ -150,7 +146,7 @@ describe('src.resolvers.search', () => {
             }
         }
         beforeEach(() => {
-            sinon.replace(zassets, "getTypeTerm", FAKE_FUNC)
+            sinon.replace(zsearch, "getTypeTerm", FAKE_FUNC)
         })
         afterEach(() => {
             sinon.restore()
@@ -174,7 +170,7 @@ describe('src.resolvers.search', () => {
             }
         }
         beforeEach(() => {
-            sinon.replace(zassets, "getTerm", FAKE_FUNC)
+            sinon.replace(zsearch, "getTerm", FAKE_FUNC)
         })
         afterEach(() => {
             sinon.restore()

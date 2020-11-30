@@ -14,6 +14,7 @@ export const file = async (_: any, args: any) => {
 
     return { filePath }
 }
+
 /**
  * Clears all downloaded files including apikey
  * @param  {any} _

@@ -60,5 +60,23 @@ export default {
     },
     scroll: (scrollId: string) => {
         return { "scroll": "5m", "scroll_id": scrollId }
+    },
+    /** Convert images to hashes
+     * @param  {string[]} files
+     * @return {string[]} hashes
+     */
+    fileGetSimHashes: (images: string[]) => {
+
+    },
+    imageSimilarity: (base64Image: string) => {
+        // from python
+        // query = {
+        //     "bool": {
+        //         "must": [
+        //             app.assets.get_sim_query(images, min_score = 0.5)
+        //         ]
+        //     }
+        // }
+        return { "query": { "bool": { "must": [similarityQuery("ADD HASH")] } } }
     }
 }

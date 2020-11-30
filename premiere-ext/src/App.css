@@ -138,3 +138,14 @@ path {
   background-color: #333;
   border-color: #333;
 }
+.uploadBox {
+  width: 100%;
+  height: 500px;
+  background-color: #999;
+}
+.notification {
+  color: #ecec00;
+}
+.selectionNotification {
+  color: #00c321;
+}

@@ -23,14 +23,15 @@ function Search(props) {
 
   const loadMore = async () => {
     setShowLoading(true)
+
     try {
       const res = await scroll(scrollId)
 
       const data = res["data"]["scroll"]
       const total = assets.length + data.assets.length + 1
-
       setHasMore(total !== data.total)
-      setAssets([...assets, ...data.assets])
+      const newset = assets.concat(data.assets)
+      setAssets(newset)
     } catch (err) {
       console.log(err)
     }
@@ -39,7 +40,6 @@ function Search(props) {
 
   const loadAssets = useCallback(async () => {
     setShowLoading(true)
-
     try {
       const res = await search(term, type)
 
@@ -55,13 +55,13 @@ function Search(props) {
       console.log(err)
     }
     setShowLoading(false)
-  }, [term, type, assets])
+  }, [])
 
   useEffect(() => {
     setType(type)
     setTerm(term)
-    loadAssets(term, type)
-  }, [term, type, setTerm, setType, loadAssets])
+    loadAssets()
+  }, [])
 
   return (
     <div className="container">

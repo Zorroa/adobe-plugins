@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { Container } from "react-bootstrap"
 import { Route, HashRouter } from "react-router-dom"
 import Home from "./views/Home"
+import Upload from "./views/Upload"
 import Video from "./views/Video"
 import Search from "./views/Search"
 import Settings from "./views/Settings"
@@ -17,6 +18,7 @@ class App extends Component {
           <Navigation />
           <Route exact path="/" component={Home} />
           <Route path="/video" component={Video} />
+          <Route path="/upload" component={Upload} />
           <Route path="/search/:term/:type" component={Search} />
           <Route path="/settings" component={Settings} />
         </Container>

@@ -1,4 +1,4 @@
-import zassets from '../zapi/assets'
+import zsearch from '../zapi/search'
 import zfile from '../zapi/file'
 import * as utils from '../zapi/utils'
 import { find, propEq } from 'ramda'
@@ -33,8 +33,6 @@ export const addTumbnail = (assets: any) => {
 
             const filepath = downloadThumbnail(proxyFile.id)
 
-            const id = files[0].id.split("/")[1]
-
             asset.thumbnail = filepath
 
             response.push(asset)
@@ -47,7 +45,7 @@ export const addTumbnail = (assets: any) => {
  * Scrolls the previously searched query
  * @param  {any} _
  * @param  {any} args GraphQL arguments
- * @returns {[object],string} Assets list and scrollID
+ * @returns {[object],scrollId, total, count} Assets list and scrollID
  */
 export const scroll = async (_: any, args: any) => {
     const { scrollId, getThumbnail } = args.input
@@ -71,7 +69,7 @@ export const scroll = async (_: any, args: any) => {
  * Search term and term/type
  * @param  {any} _
  * @param  {object} args GraphQL arguments
- * @returns {[object],scrollId} Assets list and scrollID
+ * @returns {[object],scrollId, total, count} Assets list and scrollID
  */
 export const search = async (_: any, args: any) => {
     const { term, type, getThumbnail } = args.input
@@ -79,12 +77,27 @@ export const search = async (_: any, args: any) => {
     let response: any
 
     if (term && type) {
-        response = await zassets.getTypeTerm(term, type)
+        response = await zsearch.getTypeTerm(term, type)
     } else if (term) {
-        response = await zassets.getTerm(term)
+        response = await zsearch.getTerm(term)
     }
 
+    if (getThumbnail) {
+        response.assets = addTumbnail(response.assets)
+    }
 
+    return { ...response }
+}
+
+/**Search by image
+ * @param  {any} _
+ * @param  {any} args
+ * @returns {[object],scrollId, total, count} Assets list and scrollID
+ */
+export const fileSim = async (_: any, args: any) => {
+    const { base64Image, getThumbnail } = args.input
+
+    let response: any = await zsearch.imageSimilarity(base64Image)
 
     if (getThumbnail) {
         response.assets = addTumbnail(response.assets)

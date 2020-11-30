@@ -1,6 +1,6 @@
 import request from './request'
 import queries from './queries'
-import { getResponse, scroll, deleteScrollId } from './utils'
+import { getResponse } from './utils'
 
 const TIMEOUT: string = '1m'
 export default {
@@ -24,7 +24,6 @@ export default {
     getTerm: async (term: string) => {
         let response: any
         try {
-
             const query = queries.term(term)
             const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
             response = await request.post(url, query)
@@ -75,5 +74,29 @@ export default {
             return err
         }
 
+    },
+
+    imageSimilarity: async (base64Image: string) => {
+        try {
+            const hashUrl = "/ml/v1/sim-hash"
+
+            /*
+            TODO: get hashes for for image
+            Pass hashes to fileSimilirity
+            */
+
+            const query = queries.imageSimilarity(base64Image)
+
+            const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+
+            let response = await request.post(url, query)
+
+            response = getResponse(response)
+
+            return { ...response }
+
+        } catch (err) {
+
+        }
     }
 }
