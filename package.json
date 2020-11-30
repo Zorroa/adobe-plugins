@@ -6,7 +6,7 @@
   "scripts": {
     "install": "(cd graphql && npm install) ; (cd premiere-ext && npm install); npm run build",
     "build": "(cd graphql && npm run build) ; (cd premiere-ext && npm run build)",
-    "test": "(cd graphql && npm test) ; (cd premiere-ext && npm run test)"
+    "test": "(cd graphql && npm run test) ; (cd premiere-ext && yarn test)"
   },
   "repository": {
     "type": "git",
