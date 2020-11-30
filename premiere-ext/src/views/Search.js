@@ -2,8 +2,15 @@ import React, { useState, useEffect, useCallback } from "react"
 import Thumbnail from "../comp/Thumbnail"
 import DownloadButton from "../comp/DownloadButton"
 import SimilarButton from "../comp/SimilarButton"
-import MoreButton from '../comp/MoreButton'
-import { downloadFile, getProxy, addToWorkspace, search, scroll, similar } from "../Zapi"
+import MoreButton from "../comp/MoreButton"
+import {
+  downloadFile,
+  getProxy,
+  addToWorkspace,
+  search,
+  scroll,
+  similar,
+} from "../Zapi"
 import BeatLoader from "react-spinners/BeatLoader"
 
 function Search(props) {
@@ -32,7 +39,7 @@ function Search(props) {
 
       const data = res["data"]["similar"]
       const total = assets.length + data.assets.length + 1
-      
+
       setScrollId(data.scrollId)
       setHasMore(total !== data.total)
       setAssets([...data.assets])
@@ -76,7 +83,7 @@ function Search(props) {
       console.log(err)
     }
     setShowLoading(false)
-  }, [])
+  }, [assets, term, type])
 
   useEffect(() => {
     setType(type)
@@ -86,24 +93,24 @@ function Search(props) {
 
   return (
     <div>
-        <div className="gallery" id="gallery">
-          {assets.map((asset)=> (
-              <div key={asset.id} className="mb-3 pics animation all 2">
-                <div className="thumb-buttons">
-                <SimilarButton onpress={()=> onSimilar(asset.analysis.zviImageSimilarity.simhash)}/>
-                <DownloadButton onpress={() => onAdd(asset.files)}/>
-              </div>
-              <Thumbnail asset={asset}/>
-              </div>
-          ))}
-        </div>
+      <div className="gallery" id="gallery">
+        {assets.map((asset) => (
+          <div key={asset.id} className="mb-3 pics animation all 2">
+            <div className="thumb-buttons">
+              <SimilarButton
+                onpress={() =>
+                  onSimilar(asset.analysis.zviImageSimilarity.simhash)
+                }
+              />
+              <DownloadButton onpress={() => onAdd(asset.files)} />
+            </div>
+            <Thumbnail asset={asset} />
+          </div>
+        ))}
+      </div>
       <BeatLoader size={20} color={"#ffffff"} loading={showLoading} />
       <div className="text-right">
-        {hasMore ? (
-          <MoreButton onpress={loadMore}/>
-        ) : (
-          <div></div>
-        )}
+        {hasMore ? <MoreButton onpress={loadMore} /> : <div></div>}
       </div>
     </div>
   )
