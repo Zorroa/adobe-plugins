@@ -8,8 +8,8 @@ You’ll need to set an Adobe preference to prevent your host application (Photo
 > Mac: In the Terminal, type: defaults write com.adobe.CSXS.8 PlayerDebugMode 1
 
 Installing extension.  Create a symlink to local instance of this project.  
+Note* Create the CEP directory if it's missing from the "Adobe" folder. 
 `ln -s <FULL PATH TO LOCAL REPO> /Users/{USERNAME}/Library/Application \Support/Adobe/CEP/extensions/zmlpext`
-Note* Create the CEP directory if it's missing from the Adobe folder. 
 
 Navigate to project and run `npm install` at it's root.   This will install module dependencies for both graphql & premiere-ext, then build their distribution files.  
 

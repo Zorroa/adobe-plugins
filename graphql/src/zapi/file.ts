@@ -14,7 +14,6 @@ export default {
         const headers = genToken()
         const res = await new Promise(async (resolve, reject) => {
 
-
             const url = API_SERVER + "/api/v3/files/_stream/"
 
             const paths = id.split('/')
@@ -34,7 +33,7 @@ export default {
                 // data stream seems to work better with fetch
                 const response = await fetch(url + id, { headers })
                 response.body.on('end', () => resolve(DOMAIN + filename))
-                response.body.on('error', () => reject())
+                response.body.on('error', (err) => reject(err))
                 response.body.pipe(stream)
             }
         })

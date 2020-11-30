@@ -1,6 +1,8 @@
 export default {
   "data": {
     "search": {
+      "total": 100,
+      "count": 10,
       "scrollId": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAADBR1FkZ3U0doUUFfUzZ5dTRBWlN0cGRkYWcAAAAAAAqUuRZERjJsV2l3elF5QzVOZ1dQd0FOaUJR",
       "assets": [
         {

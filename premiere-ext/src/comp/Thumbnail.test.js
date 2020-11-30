@@ -6,6 +6,7 @@ describe("<Thumbnail/>", () => {
   const asset = {
     id: "23555",
     thumbnail: "http://helloworld.jpg",
+    media: {type: "video"}
   }
   it("should render properly", () => {
     const wrapper = renderer.create(

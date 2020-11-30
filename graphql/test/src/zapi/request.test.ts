@@ -1,64 +1,85 @@
 import { expect } from 'chai'
 import axios from 'axios'
 import sinon from 'sinon'
+import zData from '../../data/zviAssets'
 import request from '../../../src/zapi/request'
 
 describe('src.resolvers.request', () => {
-    const FAKE_FUNC = sinon.fake.returns("data")
-    beforeEach(() => {
-        sinon.replace(axios, "get", FAKE_FUNC)
-        sinon.replace(axios, "post", FAKE_FUNC)
-        sinon.replace(axios, "put", FAKE_FUNC)
-        sinon.replace(axios, "request", FAKE_FUNC)
-    })
-    afterEach(() => {
-        sinon.restore()
-    })
-    it("should return get data", async () => {
-        const res = await request.get("myurl")
-        expect(res).to.eq('data')
-    })
-
-    it("should return post data", async () => {
-        const res = await request.post("myurl", {})
-        expect(res).to.eq('data')
-    })
-
-    it("should return put data", async () => {
-        const res = await request.put("myurl", {})
-        expect(res).to.eq('data')
-    })
-    it("should return delete data", async () => {
-        const res = await request.delete("myurl", {})
-        expect(res).to.eq('data')
-    })
-})
-describe("src.resolvers.request Errors", () => {
-    const FAKE_ERROR = sinon.fake.returns(new Error("ERROR"))
-    beforeEach(() => {
-        sinon.replace(axios, "get", FAKE_ERROR)
-        sinon.replace(axios, "post", FAKE_ERROR)
-        sinon.replace(axios, "put", FAKE_ERROR)
-        sinon.replace(axios, "request", FAKE_ERROR)
-    })
+    const FAKE_NET_RES = sinon.fake.returns(zData)
+    const FAKE_NET_ERROR = sinon.fake.returns(new Error("network error"))
 
     afterEach(() => {
         sinon.restore()
     })
-    it("should return get error", async () => {
-        const res = await request.get("myurl")
-        expect(res.message).to.eq("ERROR")
+    describe("get", ()=>{
+        it("should return data", async () => {
+            sinon.replace(axios, "get", FAKE_NET_RES)
+    
+            const res = await request.get("uri")
+    
+            expect(res).to.contain.keys("data")
+            expect(res['data']).to.contain.keys("_scroll_id", "took", "timed_out", "_shards", "hits")
+        })
+    
+        it("should return error", async () => {
+            sinon.replace(axios, "get", FAKE_NET_ERROR)
+    
+            const res = await request.get("uri")
+            expect(res).to.be.an("error")
+        })
     })
-    it("should return post error", async () => {
-        const res = await request.post("myurl", {})
-        expect(res.message).to.eq("ERROR")
+
+    describe("post", ()=>{
+        it("should return data", async () => {
+            sinon.replace(axios, "post", FAKE_NET_RES)
+
+            const res = await request.post("uri", {})
+            expect(res).to.contain.keys("data")
+            expect(res['data']).to.contain.keys("_scroll_id", "took", "timed_out", "_shards", "hits")
+        })
+
+        it("should return error", async () => {
+            sinon.replace(axios, "post", FAKE_NET_ERROR)
+
+            const res = await request.post("uri", {})
+            expect(res).to.be.an("error")
+        })
     })
-    it("should return put error", async () => {
-        const res = await request.put("myurl", {})
-        expect(res.message).to.eq("ERROR")
+
+    describe("put", ()=>{
+        it("should return data", async () => {
+            sinon.replace(axios, "put", FAKE_NET_RES)
+
+            const res = await request.put("uri", {})
+
+            expect(res).to.contain.keys("data")
+            expect(res['data']).to.contain.keys("_scroll_id", "took", "timed_out", "_shards", "hits")
+        })
+
+        it("should return error", async () => {
+            sinon.replace(axios, "put", FAKE_NET_ERROR)
+
+            const res = await request.put("uri", {})
+            expect(res).to.be.an("error")
+        })
     })
-    it("should return delete error", async () => {
-        const res = await request.delete("myurl", {})
-        expect(res.message).to.eq("ERROR")
+
+    describe("delete", ()=>{
+        it("should return data", async () => {
+            sinon.replace(axios, "request", FAKE_NET_RES)
+
+            const res = await request.delete("uri", {})
+
+            expect(res).to.contain.keys("data")
+            expect(res['data']).to.contain.keys("_scroll_id", "took", "timed_out", "_shards", "hits")
+        })
+
+        it("should return error", async () => {
+            sinon.replace(axios, "request", FAKE_NET_ERROR)
+
+            const res = await request.delete("uri", {})
+            expect(res).to.be.an("error")
+        })
     })
+
 })

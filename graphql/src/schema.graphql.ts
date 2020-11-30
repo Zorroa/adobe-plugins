@@ -4,6 +4,7 @@ export const typeDefs = gql`
     type Query {
         scroll(input: ScrollQuery): AssetsWithMeta
         search(input: SearchQuery): AssetsWithMeta
+        similar(input: SimQuery): AssetsWithMeta
         simSearch(input: SimQuery): AssetsWithMeta
         file(input: DownloadQuery): FilePath
         download(input: DownloadQuery): FilePath
@@ -24,7 +25,7 @@ export const typeDefs = gql`
     }
 
     input SimQuery {
-        similarity: String!
+        hash: String!
         getThumbnail: Boolean
     }
 
@@ -82,10 +83,28 @@ export const typeDefs = gql`
         label: String
     }
 
+    type ZVIPrediction {
+        score: Float
+        label: String
+    }
+
+    type ExplicitGroup {
+        explicit: Boolean
+        count: Int
+        type: String
+        predictions: [Prediction]
+    }
+
     type PredictionsGroup {
         count: Int
         type: String
         predictions: [Prediction]
+    }
+
+    type ZVIPredictionsGroup {
+        count: Float
+        type: String
+        predictions: [ZVIPrediction]
     }
 
     type TextDetection {
@@ -99,11 +118,23 @@ export const typeDefs = gql`
         simhash: String
     }
 
+    type SpeechToTextGroup {
+        words: Int
+        type: String
+        content: String
+    }
+
     type Analysis {
+        gcpVideoTextDetection: TextDetection
+        gcpVideoLogoDetection: PredictionsGroup
+        gcpVideoExplicitDetection: ExplicitGroup
+        gcpVideoLabelDetection: PredictionsGroup
+        gcpVideoObjectDetection: PredictionsGroup
+        gcpSpeechToTextDetection: SpeechToTextGroup
         gcpVisionLabelDetection: PredictionsGroup
         gcpVisionDocTextDetection: TextDetection
         gcpVisionImageTextDetection: TextDetection
-        zviLabelDetection: PredictionsGroup
+        zviLabelDetection: ZVIPredictionsGroup
         zviImageSimilarity: Simlarity
     }
 

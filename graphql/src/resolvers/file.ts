@@ -1,4 +1,5 @@
 import fs from 'fs'
+import {isNil} from 'ramda'
 import zfile from '../zapi/file'
 
 /**
@@ -9,10 +10,16 @@ import zfile from '../zapi/file'
  */
 export const file = async (_: any, args: any) => {
     const { id } = args.input
+    try{
+        if (isNil(id))
+            throw Error("Invalid ID")
 
-    const filePath = await zfile.download(id)
-
-    return { filePath }
+        const filePath = await zfile.download(id)
+    
+        return { filePath }
+    }catch(err){
+        return {status: err}
+    }
 }
 /**
  * Clears all downloaded files including apikey

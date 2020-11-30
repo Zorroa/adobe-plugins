@@ -34,6 +34,33 @@ export const authorize = () => {
   return send(query)
 }
 
+export const similar = (hash) => {
+  const query = `query{similar(input:{hash: "${hash}", getThumbnail: true}){
+    scrollId
+    total
+    count
+    assets{
+      id
+      thumbnail
+      files{ size name mimetype id category attrs { width height } }
+      source{ path extension filename mimetype filesize }
+      media{ orientation pageNumber aspect width length timeCreated type pageStack height }
+      files{ id category mimetype name }
+      analysis{
+        gcpVisionLabelDetection{ count type predictions{ score label } }
+        gcpVisionDocTextDetection{ words type content }
+        gcpVisionImageTextDetection{ words type content }
+        gcpVideoTextDetection { words type content }
+        gcpVideoLogoDetection { count type predictions {score label}}
+        gcpVideoExplicitDetection { explicit count type predictions {score label}}
+        gcpVideoLabelDetection {count type predictions  {score label} }
+        gcpVideoObjectDetection { count type predictions {score label}}
+        zviLabelDetection{ count type predictions{ score label } }
+        zviImageSimilarity{ type simhash }}}
+    }}`
+return send(query)
+}
+
 export const scroll = (scrollId) => {
   const query = `query{scroll(input:{scrollId: "${scrollId}", getThumbnail: true}){
               scrollId
@@ -47,6 +74,11 @@ export const scroll = (scrollId) => {
                 media{ orientation pageNumber aspect width length timeCreated type pageStack height }
                 files{ id category mimetype name }
                 analysis{
+                  gcpVideoTextDetection { words type content }
+                  gcpVideoLogoDetection { count type predictions {score label}}
+                  gcpVideoExplicitDetection { explicit count type predictions {score label}}
+                  gcpVideoLabelDetection {count type predictions  {score label} }
+                  gcpVideoObjectDetection { count type predictions {score label}}
                   gcpVisionLabelDetection{ count type predictions{ score label } }
                   gcpVisionDocTextDetection{ words type content }
                   gcpVisionImageTextDetection{ words type content }
@@ -71,6 +103,11 @@ export const search = (term, type) => {
                 media{ orientation pageNumber aspect width length timeCreated type pageStack height }
                 files{ id category mimetype name }
                 analysis{
+                  gcpVideoTextDetection { words type content }
+                  gcpVideoLogoDetection { count type predictions {score label}}
+                  gcpVideoExplicitDetection { explicit count type predictions {score label}}
+                  gcpVideoLabelDetection {count type predictions  {score label} }
+                  gcpVideoObjectDetection { count type predictions {score label}}
                   gcpVisionLabelDetection{ count type predictions{ score label } }
                   gcpVisionDocTextDetection{ words type content }
                   gcpVisionImageTextDetection{ words type content }
@@ -90,6 +127,11 @@ export const search = (term, type) => {
                 media{ orientation pageNumber aspect width length timeCreated type pageStack height }
                 files{ id category mimetype name }
                 analysis{
+                  gcpVideoTextDetection { words type content }
+                  gcpVideoLogoDetection { count type predictions {score label}}
+                  gcpVideoExplicitDetection { explicit count type predictions {score label}}
+                  gcpVideoLabelDetection {count type predictions  {score label} }
+                  gcpVideoObjectDetection { count type predictions {score label}}
                   gcpVisionLabelDetection{ count type predictions{ score label } }
                   gcpVisionDocTextDetection{ words type content }
                   gcpVisionImageTextDetection{ words type content }

@@ -1,36 +1,7 @@
-import config from '../../config/config'
 import { pluck } from 'ramda'
 import request from './request'
 import queries from './queries'
 
-const API_SERVER = config.zapiServer
-
-// elastic search similarity query
-/**
- * @deprecated
- * @param  {string} hash Similarity hash
- * @returns object
- */
-export function similarityQuery(hash: string): object {
-    return {
-        "script_score": {
-            "query": {
-                "match_all": {}
-            },
-            "script": {
-                "source": "similarity",
-                "lang": "zorroa-similarity",
-                "params": {
-                    "minScore": 0.75,
-                    "field": "analysis.zvi-image-similarity.simhash",
-                    "hashes": [hash]
-                }
-            },
-            "boost": 1.0,
-            "min_score": 0.75
-        }
-    }
-}
 
 // get next page
 /** Gets more assets from the scrollId
@@ -59,11 +30,27 @@ export async function deleteScrollId(scrollId: string) {
 
     return response.data
 }
+
+/**
+ * Converts ZMLP namespace key to graphql friendly key type
+ */
+const analysisMap = {
+    'gcp-video-text-detection': "gcpVideoTextDetection",
+    'gcp-video-logo-detection': "gcpVideoLogoDetection",
+    'gcp-video-label-detection': "gcpVisionLabelDetection",
+    'gcp-video-object-detection':"gcpVideoObjectDetection",
+    'gcp-vision-doc-text-detection':"gcpVisionDocTextDetection",
+    'gcp-vision-image-text-detection':"gcpVisionImageTextDetection",
+    'gcp-speech-to-text':"gcpSpeechToText",
+    'zvi-label-detection':"zviLabelDetection",
+    'zvi-image-similarity':"zviImageSimilarity"
+}
+
 /**
  * Plucks all assets and scrollId
  * @param  {object} response ZAPI response object
  * @returns {[object]} assets
- * @returns {string} scrollId
+ * @returns {object} scrollId, assets, total, count
  */
 export function getResponse(response: any) {
     const hits: [] = response.data.hits.hits
@@ -73,6 +60,14 @@ export function getResponse(response: any) {
 
     let assets = hits.map((asset: any) => {
         asset._source.id = asset._id
+
+        const analysis = {}
+        for (const [key, value] of Object.entries(asset._source.analysis)){
+            analysis[analysisMap[key]] = value
+        }
+
+        asset._source.analysis = analysis
+
         return asset
     })
 

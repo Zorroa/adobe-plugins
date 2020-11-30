@@ -1,6 +1,6 @@
 import request from './request'
 import queries from './queries'
-import { getResponse, scroll, deleteScrollId } from './utils'
+import { getResponse } from './utils'
 
 const TIMEOUT: string = '1m'
 export default {
@@ -26,7 +26,9 @@ export default {
         try {
 
             const query = queries.term(term)
+            
             const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+
             response = await request.post(url, query)
 
             response = getResponse(response)
@@ -65,6 +67,7 @@ export default {
             const query = queries.similarity(hash)
 
             const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
+
             let response = await request.post(url, query)
 
             response = getResponse(response)

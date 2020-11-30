@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MoreButton/> should render properly 1`] = `
+<button
+  className="btn btn-dark btn-md btn btn-primary"
+  disabled={false}
+  onClick={[Function]}
+  type="button"
+>
+  <svg
+    className="bi bi-three-dots"
+    fill="currentColor"
+    height="1em"
+    viewBox="0 0 18 18"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+      fillRule="evenodd"
+    />
+  </svg>
+</button>
+`;

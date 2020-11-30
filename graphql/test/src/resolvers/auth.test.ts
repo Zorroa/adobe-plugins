@@ -1,18 +1,13 @@
 import fs from 'fs'
+import authData from '../../data/authfile'
 import {authorize, userAuthorization, InvalidApiKeyError} from '../../../src/resolvers/auth'
 import {expect } from 'chai'
 import {describe} from 'mocha'
 
 describe('src.resolvers.auth', ()=>{    
     describe("authorize", ()=>{
-        let args = {input: {
-            zapiKey : encodeURIComponent(JSON.stringify({"accessKey": "key", "secretKey": "secret"})),
-            projectId : "67890", 
-            zapiServer : "https://dev.api.zvi.zorroa.com"
-        }}
-        beforeEach(()=>{
+        let args:any = {input: {...authData}}
 
-        })
         afterEach(()=>{
             if(fs.existsSync(process.env.USER_AUTH_FILE))
                 fs.unlinkSync(process.env.USER_AUTH_FILE)
@@ -24,7 +19,7 @@ describe('src.resolvers.auth', ()=>{
         })
 
         it("should generate SyntaxError", async ()=>{
-            args["input"]['zapiKey'] = "invalid some key"
+            args["input"]['zapiKey'] = ""
 
             const res = authorize({}, args)
             expect(res['status']).to.contain(SyntaxError)
@@ -45,6 +40,7 @@ describe('src.resolvers.auth', ()=>{
             expect(res['zapiServer']).to.eq("")
             expect(res['projectId']).to.eq("")
         })
+        
         it("should contain values", async()=>{    
             fs.writeFileSync(process.env.USER_AUTH_FILE, JSON.stringify({"zapiServer":1, "projectId":2}))
             const {zapiServer, projectId} = await userAuthorization({}, {})

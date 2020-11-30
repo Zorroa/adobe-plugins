@@ -1,7 +1,7 @@
-import zassets from '../zapi/assets'
+import zassets from '../zapi/search'
 import zfile from '../zapi/file'
 import * as utils from '../zapi/utils'
-import { find, propEq } from 'ramda'
+import { find, propEq, isNil, mergeDeepLeft } from 'ramda'
 
 /**
  * Caches the download
@@ -33,8 +33,6 @@ export const addTumbnail = (assets: any) => {
 
             const filepath = downloadThumbnail(proxyFile.id)
 
-            const id = files[0].id.split("/")[1]
-
             asset.thumbnail = filepath
 
             response.push(asset)
@@ -52,19 +50,32 @@ export const addTumbnail = (assets: any) => {
 export const scroll = async (_: any, args: any) => {
     const { scrollId, getThumbnail } = args.input
 
-    const response = await utils.scroll(scrollId)
+    let response: any = {assets: [], scrollId: scrollId, total: 0, count: 0}
 
-    const data = utils.getResponse(response)
+    let data: any
 
-    if (!data.assets.length) {
-        utils.deleteScrollId(scrollId)
+    try{
+        if (isNil(scrollId)){
+            throw new Error("Invalid scrollId")
+        }
+    
+        data = await utils.scroll(scrollId)
+    
+        data = utils.getResponse(data)
+
+        if (!data.assets.length) {
+            utils.deleteScrollId(response.scrollId)
+        }
+    
+        if (getThumbnail) {
+            data.assets = addTumbnail(data.assets)
+        }
+
+        return { ...mergeDeepLeft(data, response) }
+
+    }catch(err){
+        return {status: err}
     }
-
-    if (getThumbnail) {
-        data.assets = addTumbnail(data.assets)
-    }
-
-    return { scrollId, ...data }
 }
 
 /**
@@ -76,19 +87,44 @@ export const scroll = async (_: any, args: any) => {
 export const search = async (_: any, args: any) => {
     const { term, type, getThumbnail } = args.input
 
-    let response: any
+    let response: any = {assets: [], scrollId: "", total: 0, count: 0}
+
+    let data: any
 
     if (term && type) {
-        response = await zassets.getTypeTerm(term, type)
+        
+        data = await zassets.getTypeTerm(term, type)
+
     } else if (term) {
-        response = await zassets.getTerm(term)
+
+        data = await zassets.getTerm(term)
+
     }
-
-
 
     if (getThumbnail) {
-        response.assets = addTumbnail(response.assets)
+        response.assets = addTumbnail(data.assets)
     }
 
-    return { ...response }
+    return { ...mergeDeepLeft(data, response) }
+}
+
+/**
+ * Search term and term/type
+ * @param  {any} _
+ * @param  {object} args GraphQL arguments
+ * @returns {[object],scrollId} Assets list and scrollID
+ */
+export const similar = async (_: any, args: any) => {
+    const { hash, getThumbnail } = args.input
+
+    let response: any = {assets: [], scrollId: "", total: 0, count: 0}
+    let data: any
+
+    data = await zassets.similaritySearch(hash)
+
+    if (getThumbnail) {
+        response.assets = addTumbnail(data.assets)
+    }
+
+    return { ...mergeDeepLeft(data, response) }
 }

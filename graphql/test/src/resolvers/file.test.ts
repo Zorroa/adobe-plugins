@@ -5,20 +5,29 @@ import fs from 'fs'
 import {expect } from 'chai'
 import {describe} from 'mocha'
 
-describe('src.resolvers.file', ()=>{    
+describe('src.resolvers.file', ()=>{
+    const FILEPATH = "http://localhost/fakepath.jpg"
+    
     describe("file", ()=>{
-        const filePath = "http://localhost/fakepath.jpg"
+        
         beforeEach(()=>{
-            sinon.stub(zfile, "download").returns(Promise.resolve(filePath))
+            const FAKE_DOWNLOAD = sinon.fake.returns(FILEPATH)
+            sinon.replace(zfile, "download", FAKE_DOWNLOAD)
         })
         afterEach(()=>{
             sinon.restore()
         })
 
+        it("should return Error", async ()=>{
+            const res = await file({}, {input: {}})
+            expect(res).to.have.property("status")
+            expect(res['status']).to.be.an('error')
+        })
+
         it("should return filepath", async ()=>{
-            const res = await file({}, {input: {id: "1"}})
+            const res = await file({}, {input: {id: "hello"}})
             expect(res).to.have.key("filePath")
-            expect(res['filePath']).to.eq(filePath)
+            expect(res['filePath']).to.eq(FILEPATH)
         })
     })
 
@@ -39,7 +48,7 @@ describe('src.resolvers.file', ()=>{
             process.env = env
         })
 
-        it("should return filepath", async ()=>{
+        it("should return response", async ()=>{
             const res = await clearCache({}, {})
             
             expect(res).to.have.keys(["total","deletedFiles","authFile"])

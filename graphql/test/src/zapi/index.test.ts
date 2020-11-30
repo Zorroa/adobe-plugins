@@ -3,7 +3,6 @@ import {describe} from 'mocha'
 import {genToken} from '../../../src/zapi'
 import config from '../../../config/config'
 
-const HEADER = {"headers": {"Authorization": "Bearer TOKEN"}}
 describe('src.zapi.utils', ()=>{
     describe("similarityQuery", ()=>{
         beforeEach(()=>{
