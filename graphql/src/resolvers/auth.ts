@@ -38,7 +38,7 @@ export const authorize = (_: any, args: any) => {
 export const userAuthorization = async (_: any, args: any) => {
 
     if (fs.existsSync(process.env.USER_AUTH_FILE)) {
-        
+
         const { zapiServer, projectId } = JSON.parse(fs.readFileSync(process.env.USER_AUTH_FILE, "utf8"))
 
         return { zapiServer, projectId }

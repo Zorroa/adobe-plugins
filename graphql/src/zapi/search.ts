@@ -26,7 +26,7 @@ export default {
         try {
 
             const query = queries.term(term)
-            
+
             const url = "/api/v3/assets/_search?scroll=" + TIMEOUT
 
             response = await request.post(url, query)

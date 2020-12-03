@@ -65,7 +65,7 @@ function Search(props) {
     setShowLoading(false)
   }
 
-  const loadAssets = useCallback(async () => {
+  const loadAssets = useCallback(async (term, type) => {
     setShowLoading(true)
 
     try {
@@ -74,7 +74,7 @@ function Search(props) {
       const data = res["data"]["search"]
 
       const total = assets.length + data.assets.length
-      console.log(data)
+
       setAssets(data.assets)
       setScrollId(data.scrollId)
       setHasMore(total !== data.total)
@@ -83,7 +83,7 @@ function Search(props) {
       console.log(err)
     }
     setShowLoading(false)
-  }, [assets, term, type])
+  }, [])
 
   useEffect(() => {
     setType(type)
