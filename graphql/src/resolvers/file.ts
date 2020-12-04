@@ -15,7 +15,7 @@ export const file = async (_: any, args: any) => {
             throw Error("Invalid ID")
 
         const filePath = await zfile.download(id)
-    
+
         return { filePath }
     }catch(err){
         return {status: err}

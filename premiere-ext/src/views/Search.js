@@ -2,13 +2,11 @@ import React, { useState, useEffect, useCallback } from "react"
 import Thumbnail from "../comp/Thumbnail"
 import DownloadButton from "../comp/DownloadButton"
 import SimilarButton from "../comp/SimilarButton"
-import MoreButton from "../comp/MoreButton"
 import {
   downloadFile,
   getProxy,
   addToWorkspace,
   search,
-  scroll,
   similar,
 } from "../Zapi"
 import BeatLoader from "react-spinners/BeatLoader"
@@ -18,8 +16,6 @@ function Search(props) {
   const [showLoading, setShowLoading] = useState(true)
   const [assets, setAssets] = useState([])
   const [term, setTerm] = useState(params.term)
-  const [hasMore, setHasMore] = useState(false)
-  const [scrollId, setScrollId] = useState("")
   const [type, setType] = useState(params.type)
 
   const onAdd = async (files) => {
@@ -38,27 +34,8 @@ function Search(props) {
       const res = await similar(hash)
 
       const data = res["data"]["similar"]
-      const total = assets.length + data.assets.length + 1
 
-      setScrollId(data.scrollId)
-      setHasMore(total !== data.total)
       setAssets([...data.assets])
-    } catch (err) {
-      console.log(err)
-    }
-    setShowLoading(false)
-  }
-
-  const loadMore = async () => {
-    setShowLoading(true)
-    try {
-      const res = await scroll(scrollId)
-
-      const data = res["data"]["scroll"]
-      const total = assets.length + data.assets.length + 1
-
-      setHasMore(total !== data.total)
-      setAssets([...data.assets, ...assets])
     } catch (err) {
       console.log(err)
     }
@@ -67,29 +44,24 @@ function Search(props) {
 
   const loadAssets = useCallback(async () => {
     setShowLoading(true)
-
     try {
       const res = await search(term, type)
 
       const data = res["data"]["search"]
 
-      const total = assets.length + data.assets.length
-      console.log(data)
       setAssets(data.assets)
-      setScrollId(data.scrollId)
-      setHasMore(total !== data.total)
     } catch (err) {
       // TODO: handle error
       console.log(err)
     }
     setShowLoading(false)
-  }, [assets, term, type])
+  }, [term, type, setAssets])
 
   useEffect(() => {
     setType(type)
     setTerm(term)
-    loadAssets(term, type)
-  }, [term, type, setTerm, setType, loadAssets])
+    loadAssets()
+  }, [term, type, loadAssets])
 
   return (
     <div>
@@ -109,9 +81,6 @@ function Search(props) {
         ))}
       </div>
       <BeatLoader size={20} color={"#ffffff"} loading={showLoading} />
-      <div className="text-right">
-        {hasMore ? <MoreButton onpress={loadMore} /> : <div></div>}
-      </div>
     </div>
   )
 }

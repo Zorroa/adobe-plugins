@@ -19,10 +19,5 @@ exports[`<Navigation/> renders correctly 1`] = `
       className="css-1asah85"
     />
   </div>
-  <div
-    className="text-right"
-  >
-    <div />
-  </div>
 </div>
 `;

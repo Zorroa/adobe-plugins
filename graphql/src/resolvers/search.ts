@@ -50,7 +50,7 @@ export const addTumbnail = (assets: any) => {
 export const scroll = async (_: any, args: any) => {
     const { scrollId, getThumbnail } = args.input
 
-    let response: any = {assets: [], scrollId: scrollId, total: 0, count: 0}
+    const response: any = {assets: [], scrollId, total: 0, count: 0}
 
     let data: any
 
@@ -58,15 +58,15 @@ export const scroll = async (_: any, args: any) => {
         if (isNil(scrollId)){
             throw new Error("Invalid scrollId")
         }
-    
+
         data = await utils.scroll(scrollId)
-    
+
         data = utils.getResponse(data)
 
         if (!data.assets.length) {
             utils.deleteScrollId(response.scrollId)
         }
-    
+
         if (getThumbnail) {
             data.assets = addTumbnail(data.assets)
         }
@@ -87,12 +87,12 @@ export const scroll = async (_: any, args: any) => {
 export const search = async (_: any, args: any) => {
     const { term, type, getThumbnail } = args.input
 
-    let response: any = {assets: [], scrollId: "", total: 0, count: 0}
+    const response: any = {assets: [], scrollId: "", total: 0, count: 0}
 
     let data: any
 
     if (term && type) {
-        
+
         data = await zassets.getTypeTerm(term, type)
 
     } else if (term) {
@@ -117,7 +117,7 @@ export const search = async (_: any, args: any) => {
 export const similar = async (_: any, args: any) => {
     const { hash, getThumbnail } = args.input
 
-    let response: any = {assets: [], scrollId: "", total: 0, count: 0}
+    const response: any = {assets: [], scrollId: "", total: 0, count: 0}
     let data: any
 
     data = await zassets.similaritySearch(hash)
