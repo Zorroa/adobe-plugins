@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import Thumbnail from "../comp/Thumbnail"
 import DownloadButton from "../comp/DownloadButton"
 import SimilarButton from "../comp/SimilarButton"
@@ -42,28 +42,26 @@ function Search(props) {
     setShowLoading(false)
   }
 
+  const loadAssets = useCallback(async () => {
+    setShowLoading(true)
+    try {
+      const res = await search(term, type)
+
+      const data = res["data"]["search"]
+
+      setAssets(data.assets)
+    } catch (err) {
+      // TODO: handle error
+      console.log(err)
+    }
+    setShowLoading(false)
+  }, [term, type, setAssets])
+
   useEffect(() => {
     setType(type)
     setTerm(term)
-
-    const loadAssets = async () => {
-      setShowLoading(true)
-
-      try {
-        const res = await search(term, type)
-
-        const data = res["data"]["search"]
-
-        setAssets(data.assets)
-      } catch (err) {
-        // TODO: handle error
-        console.log(err)
-      }
-
-      setShowLoading(false)
-    }
     loadAssets()
-  }, [term, type, setTerm, setType, assets])
+  }, [term, type, loadAssets])
 
   return (
     <div>
